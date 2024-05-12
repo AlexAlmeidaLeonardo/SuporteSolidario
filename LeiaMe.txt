@@ -1,0 +1,16 @@
+Instalação do .Net 8: https://dotnet.microsoft.com/pt-br/download
+
+Após a instalação do dotnet executamos os comandos abaixo. Eles facilitam o desenvolvimento, criando alguns elementos de forma automática.
+
+         AspNet CodeGenerator: dotnet tool install -g dotnet-aspnet-codegenerator
+AspNet CodeGenerator Designer: dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design
+
+Neste ponto estamos prontos para o desenvolvimento.
+
+Para a criação de controllers:
+dotnet aspnet-codegenerator controller -name InformacoesController --relativeFolderPath Controllers
+
+Para a criação de views:
+dotnet aspnet-codegenerator view Index Empty --relativeFolderPath Views/Informacoes --useDefaultLayout
+
+
