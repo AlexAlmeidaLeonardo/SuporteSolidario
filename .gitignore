@@ -1,2 +1,6 @@
 /bin
 /obj
+src/Business/bin
+src/Business/obj
+src/Web/bin
+src/Web/obj
