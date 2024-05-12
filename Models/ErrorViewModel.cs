@@ -1,4 +1,4 @@
-namespace SuporteSolidarioFrontend.Models;
+namespace SuporteSolidario.Models;
 
 public class ErrorViewModel
 {

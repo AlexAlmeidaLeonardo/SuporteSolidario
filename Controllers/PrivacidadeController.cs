@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace MyApp.Namespace
+namespace SuporteSolidario.Controllers
 {
     public class PrivacidadeController : Controller
     {

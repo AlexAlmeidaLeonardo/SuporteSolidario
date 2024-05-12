@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using SuporteSolidarioFrontend.Models;
+using SuporteSolidario.Models;
 
-namespace SuporteSolidarioFrontend.Controllers;
+namespace SuporteSolidario.Controllers;
 
 public class HomeController : Controller
 {
