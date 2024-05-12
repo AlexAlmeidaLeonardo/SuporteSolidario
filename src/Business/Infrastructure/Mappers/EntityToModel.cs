@@ -196,4 +196,72 @@ public static class EntityToModel
 
         return model;
     }
+
+    internal static void MapCliente(ClienteEntity entity, ClienteModel? model)
+    {
+        if (model is null) 
+        {
+            model = new ClienteModel();
+            model.Id = entity.Id;
+        }
+
+        model.Alteracao = entity.Alteracao;
+        model.Ativo = entity.Ativo;
+        model.Bairro = entity.Bairro;
+        model.Celular = entity.Celular;
+        model.Cep = entity.Cep;
+        model.Cidade = entity.Cidade;
+        model.Cpf = entity.Cpf;
+        model.Criacao = entity.Criacao;
+        model.DddCelular = entity.DddCelular;
+        model.DddTelefone = entity.DddTelefone;
+        model.Email = entity.Email;
+        model.Endereco = entity.Endereco;
+        model.Estado = entity.Estado;
+        model.Inativacao = entity.Inativacao;
+        model.Logradouro = entity.Logradouro;
+        model.Nome = entity.Nome;
+        model.Numero = entity.Numero;
+        model.Sobrenome = entity.Sobrenome;
+        model.Telefone = entity.Telefone;
+        model.IdUsuario = entity.IdUsuario;
+
+        model.Latitude = entity.Latitude;
+        model.Longitude = entity.Longitude;
+        model.PossuiCoordenadasGps = entity.PossuiCoordenadasGps;
+    }
+
+    internal static void MapColaborador(ColaboradorEntity entity, ColaboradorModel? model)
+    {
+        if (model is null) 
+        {
+            model = new ColaboradorModel();
+            model.Id = entity.Id;
+        }
+
+        model.Alteracao = entity.Alteracao;
+        model.Ativo = entity.Ativo;
+        model.Bairro = entity.Bairro;
+        model.Celular = entity.Celular;
+        model.Cep = entity.Cep;
+        model.Cidade = entity.Cidade;
+        model.Cpf = entity.Cpf;
+        model.Criacao = entity.Criacao;
+        model.DddCelular = entity.DddCelular;
+        model.DddTelefone = entity.DddTelefone;
+        model.Email = entity.Email;
+        model.Endereco = entity.Endereco;
+        model.Estado = entity.Estado;
+        model.Inativacao = entity.Inativacao;
+        model.Logradouro = entity.Logradouro;
+        model.Nome = entity.Nome;
+        model.Numero = entity.Numero;
+        model.Sobrenome = entity.Sobrenome;
+        model.Telefone = entity.Telefone;
+        model.IdUsuario = entity.IdUsuario;
+
+        model.Latitude = entity.Latitude;
+        model.Longitude = entity.Longitude;
+        model.PossuiCoordenadasGps = entity.PossuiCoordenadasGps;
+    }
 }

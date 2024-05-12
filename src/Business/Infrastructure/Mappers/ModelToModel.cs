@@ -7,6 +7,7 @@ public static class ModelToModel
     internal static ColaboradorModel MapColaborador(ColaboradorModel entityModel, ColaboradorModel newModel)
     {
         entityModel.Id = newModel.Id;
+        entityModel.IdUsuario = newModel.IdUsuario;
         entityModel.Ativo = newModel.Ativo;
         entityModel.Bairro = newModel.Bairro;
         entityModel.Celular = newModel.Celular;

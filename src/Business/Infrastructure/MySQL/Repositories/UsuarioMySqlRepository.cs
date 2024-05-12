@@ -45,6 +45,15 @@ public class UsuarioMySqlRepository : IUsuarioRepository
         return existe;
     }
 
+    public UsuarioEntity Ler(long idUsuario)
+    {
+        UsuarioModel model = _context.Usuarios.Where(x => x.Id == idUsuario).FirstOrDefault();
+
+        UsuarioEntity entity = ModelToEntity.MapUsuario(model);
+
+        return entity;
+    }
+
     public bool LoginExiste(string login)
     {
         bool jaExiste = _context.Usuarios.Where(x => x.Login == login).Any();

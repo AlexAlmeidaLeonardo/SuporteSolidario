@@ -7,6 +7,7 @@ using SuporteSolidarioBusiness.Application.DTOs;
 using SuporteSolidarioBusiness.Application.Repositories;
 using SuporteSolidarioBusiness.Application.Services;
 using SuporteSolidarioBusiness.Application.UseCases;
+using SuporteSolidarioBusiness.Domain.Entities;
 
 namespace SuporteSolidario.Controllers
 {
@@ -14,13 +15,15 @@ namespace SuporteSolidario.Controllers
     {
         private readonly ICryptoService _cryptoService;
         private readonly IUsuarioRepository _usuarioRepository;
+        private readonly IColaboradorRepository _colaboradorRepository;
         private readonly ITokenService _tokenService;
         private readonly IAuthRepository _repo;
 
-        public ColaboradorController(ICryptoService cryptoService, IUsuarioRepository usuarioRepository, ITokenService tokenService, IAuthRepository repo)
+        public ColaboradorController(ICryptoService cryptoService, IColaboradorRepository colaboradorRepository, IUsuarioRepository usuarioRepository, ITokenService tokenService, IAuthRepository repo)
         {
             _cryptoService = cryptoService;
             _usuarioRepository = usuarioRepository;
+            _colaboradorRepository = colaboradorRepository;
             _tokenService = tokenService;
             _repo = repo;
         }
@@ -50,6 +53,7 @@ namespace SuporteSolidario.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Login(LoginViewModel vmLogin)
         {
             try
@@ -92,5 +96,46 @@ namespace SuporteSolidario.Controllers
             return View();
         }
 
+        [HttpGet]
+        public ActionResult Edit(long id)
+        {
+            try
+            {
+                ViewData["FormAction"] = "Edit";
+    
+                BuscarColaboradorUseCase useCase = new BuscarColaboradorUseCase(_colaboradorRepository, id);
+    
+                ColaboradorEntity colaboradorEntity = useCase.Execute();
+    
+                ColaboradorViewModel viewModel = EntityToViewModel.MapColaborador(colaboradorEntity);
+    
+                return View(viewModel);
+            }
+            catch (Exception e)
+            {                
+                ViewData["MensagemErro"] = e.Message;
+                return View();
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(ColaboradorViewModel viewModel)
+        {
+            try
+            {
+                ColaboradorEntity input = ViewModelToEntity.MapColaborador(viewModel);
+    
+                AtualizarColaboradorUseCase useCase = new AtualizarColaboradorUseCase(_colaboradorRepository, input);
+                useCase.Execute();
+    
+                return RedirectToAction("Index", "Colaborador");
+            }
+            catch (Exception e)
+            {
+                ViewData["MensagemErro"] = e.Message;
+                return View();
+            }            
+        }
     }
 }

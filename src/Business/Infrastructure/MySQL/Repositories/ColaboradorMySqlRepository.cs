@@ -16,10 +16,10 @@ public class ColaboradorMySqlRepository : IColaboradorRepository
     public ColaboradorEntity Ler(long id)
     {
         ColaboradorModel? model = _context.Colaboradores.Where(x => x.Id == id).FirstOrDefault();
-
+        
         if(model is null)
         {
-            return null;
+            throw new NotFoundException($"Colaborador com id {id} não encontrado");
         }
 
         ColaboradorEntity entity = ModelToEntity.MapColaborador(model);
@@ -27,40 +27,38 @@ public class ColaboradorMySqlRepository : IColaboradorRepository
         return entity;
     }
 
-    public ColaboradorEntity Adicionar(ColaboradorEntity obj)
+    public ColaboradorEntity Adicionar(ColaboradorEntity entity)
     {
-        ColaboradorModel model = EntityToModel.MapColaborador(obj);
+        ColaboradorModel model = EntityToModel.MapColaborador(entity);
         model.Criacao = DateTime.Now;
 
         _context.Colaboradores.Add(model);
 
         _context.SaveChanges();
 
-        ColaboradorEntity entity = ModelToEntity.MapColaborador(model);
+        ColaboradorEntity entityOut = ModelToEntity.MapColaborador(model);
 
-        return entity;
+        return entityOut;
     }
 
-    public ColaboradorEntity Atualizar(ColaboradorEntity obj)
+    public ColaboradorEntity Atualizar(ColaboradorEntity entity)
     {
-        ColaboradorModel? entityModel = _context.Colaboradores.Find(obj.Id);
+        ColaboradorModel? entityModel = _context.Colaboradores.Find(entity.Id);
         if(entityModel is null)
         {
-            throw new NotFoundException($"Colaborador com id {obj.Id} não encontrado");
+            throw new NotFoundException($"Colaborador com id {entity.Id} não encontrado");
         }
         
-        ColaboradorModel newModel = EntityToModel.MapColaborador(obj);
-
-        entityModel = ModelToModel.MapColaborador(entityModel, newModel);
+        EntityToModel.MapColaborador(entity, entityModel);
         entityModel.Alteracao = DateTime.Now;
 
         _context.Colaboradores.Update(entityModel);
 
         _context.SaveChanges();
 
-        ColaboradorEntity entity = ModelToEntity.MapColaborador(entityModel);
+        ColaboradorEntity entityOut = ModelToEntity.MapColaborador(entityModel);
 
-        return entity;
+        return entityOut;
     }
 
     public bool ExisteLogin(long id)

@@ -44,6 +44,8 @@ public static class ModelToEntity
     {
         ColaboradorEntity entity = new ColaboradorEntity
         {
+            Id = model.Id,
+            IdUsuario = model.Id,
             Alteracao = model.Alteracao,
             Ativo = model.Ativo,
             Bairro = model.Bairro,
@@ -57,7 +59,7 @@ public static class ModelToEntity
             Email = model.Email,
             Endereco = model.Endereco,
             Estado = model.Estado,
-            Id = model.Id,
+            
             Inativacao = model.Inativacao,
             Logradouro = model.Logradouro,
             Nome = model.Nome,

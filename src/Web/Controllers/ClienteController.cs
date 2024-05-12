@@ -7,6 +7,7 @@ using SuporteSolidarioBusiness.Application.DTOs;
 using SuporteSolidarioBusiness.Application.Repositories;
 using SuporteSolidarioBusiness.Application.Services;
 using SuporteSolidarioBusiness.Application.UseCases;
+using SuporteSolidarioBusiness.Domain.Entities;
 
 namespace SuporteSolidario.Controllers
 {
@@ -14,13 +15,15 @@ namespace SuporteSolidario.Controllers
     {
         private readonly ICryptoService _cryptoService;
         private readonly IUsuarioRepository _usuarioRepository;
+        private readonly IClienteRepository _clienteRepository;
         private readonly ITokenService _tokenService;
         private readonly IAuthRepository _repo;
 
-        public ClienteController(ICryptoService cryptoService, IUsuarioRepository usuarioRepository, ITokenService tokenService, IAuthRepository repo)
+        public ClienteController(ICryptoService cryptoService, IUsuarioRepository usuarioRepository, IClienteRepository clienteRepository, ITokenService tokenService, IAuthRepository repo)
         {
             _cryptoService = cryptoService;
             _usuarioRepository = usuarioRepository;
+            _clienteRepository = clienteRepository;
             _tokenService = tokenService;
             _repo = repo;
         }
@@ -93,5 +96,46 @@ namespace SuporteSolidario.Controllers
             return View();
         }
 
+        [HttpGet]
+        public ActionResult Edit(long id)
+        {
+            try
+            {
+                ViewData["FormAction"] = "Edit";
+    
+                BuscarClienteUseCase useCase = new BuscarClienteUseCase(_clienteRepository, id);
+    
+                ClienteEntity clienteEntity = useCase.Execute();
+    
+                ClienteViewModel viewModel = EntityToViewModel.MapCliente(clienteEntity);
+    
+                return View(viewModel);
+            }
+            catch (Exception e)
+            {                
+                ViewData["MensagemErro"] = e.Message;
+                return View();
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(ClienteViewModel viewModel)
+        {
+            try
+            {
+                ClienteEntity input = ViewModelToEntity.MapCliente(viewModel);
+    
+                AtualizarClienteUseCase useCase = new AtualizarClienteUseCase(_clienteRepository, input);
+                useCase.Execute();
+    
+                return RedirectToAction("Index", "Cliente");
+            }
+            catch (Exception e)
+            {
+                ViewData["MensagemErro"] = e.Message;
+                return View();
+            }            
+        }
     }
 }

@@ -43,13 +43,20 @@ public class ClienteMySqlRepository : IClienteRepository
 
     public ClienteEntity Atualizar(ClienteEntity entity)
     {
-        ClienteModel model = EntityToModel.MapCliente(entity);
+        ClienteModel? entityModel = _context.Clientes.Find(entity.Id);
+        if(entityModel is null)
+        {
+            throw new NotFoundException($"Cliente com id {entity.Id} não encontrado");
+        }
 
-        _context.Clientes.Update(model);
+        EntityToModel.MapCliente(entity, entityModel);
+        entityModel.Alteracao = DateTime.Now;
+
+        _context.Clientes.Update(entityModel);
 
         _context.SaveChanges();
 
-        ClienteEntity entityOut = ModelToEntity.MapCliente(model);
+        ClienteEntity entityOut = ModelToEntity.MapCliente(entityModel);
 
         return entityOut;
     }

@@ -9,4 +9,5 @@ public interface IUsuarioRepository
     void Atualizar(LoginDTO dto, HashSaltDTO hashSalt);
     bool LoginExiste(string login);
     bool ExistemUsuarios();
+    UsuarioEntity Ler(long idUsuario);
 }

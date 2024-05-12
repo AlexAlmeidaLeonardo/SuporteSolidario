@@ -7,6 +7,7 @@ public static class DtoToDto
     internal static ClienteEntity MapCliente(ClienteEntity entityModel, ClienteEntity newModel)
     {
         entityModel.Id = newModel.Id;
+        entityModel.IdUsuario = newModel.IdUsuario;
         entityModel.Ativo = newModel.Ativo;
         entityModel.Bairro = newModel.Bairro;
         entityModel.Celular = newModel.Celular;
@@ -30,6 +31,7 @@ public static class DtoToDto
     internal static ColaboradorEntity MapColaborador(ColaboradorEntity entityModel, ColaboradorEntity newModel)
     {
         entityModel.Id = newModel.Id;
+        entityModel.IdUsuario = newModel.IdUsuario;
         entityModel.Ativo = newModel.Ativo;
         entityModel.Bairro = newModel.Bairro;
         entityModel.Celular = newModel.Celular;
