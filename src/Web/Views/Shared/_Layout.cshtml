@@ -1,4 +1,17 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http;
+@using System.Security.Claims;
+@using SuporteSolidarioBusiness.Domain.Enums;
+@inject IHttpContextAccessor HttpContextAccessor;
+@{
+    HttpContext httpContext = HttpContextAccessor.HttpContext;
+    IEnumerable<Claim> claims = httpContext.User.Claims;
+    bool showCliente = (!httpContext.User.Identity.IsAuthenticated || httpContext.User.HasClaim("TipoDeUsuario", Convert.ToString((int) TipoUsuario.Cliente)) );
+    bool showColaborador = (!httpContext.User.Identity.IsAuthenticated || httpContext.User.HasClaim("TipoDeUsuario", Convert.ToString((int) TipoUsuario.Colaborador)) );
+    bool showLogout = showCliente || showColaborador;
+    string controllerParaLogout = showCliente ? "Cliente" : "Colaborador";
+}
+
+<!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
@@ -54,8 +67,19 @@
                     <ul class="navbar-nav">
                         <li class="nav-item"><a href="@Url.Action("Index", "Home")" class="nav-link text-write">Início</a></li>
                         <li class="nav-item"><a href="@Url.Action("Index", "Informacoes")" class="nav-link text-write">Informações</a></li>
-                        <li class="nav-item"><a href="@Url.Action("Index", "Cliente")" class="nav-link text-write">Área do Cliente</a></li>
-                        <li class="nav-item"><a href="@Url.Action("Index", "Colaborador")" class="nav-link text-write">Área do Colaborador</a></li>
+                        @if(showCliente)
+                        {
+                            <li class="nav-item"><a href="@Url.Action("Index", "Cliente")" class="nav-link text-write">Área do Cliente</a></li>
+                        }
+                        @if(showColaborador)
+                        {
+                            <li class="nav-item"><a href="@Url.Action("Index", "Colaborador")" class="nav-link text-write">Área do Colaborador</a></li>
+                        }
+
+                        @if(httpContext.User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item"><a href="@Url.Action("Logout", @controllerParaLogout)" class="nav-link text-write">Sair</a></li>
+                        }
                     </ul>
                 </div>
             </div>

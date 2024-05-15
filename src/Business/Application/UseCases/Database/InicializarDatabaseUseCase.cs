@@ -40,6 +40,8 @@ public class InicializarDatabaseUseCase
                     throw new Exception("Não foi possível criar a base de dados!");
             }
 
+            /*
+
             ICryptoService _cryptoService = scope.ServiceProvider.GetRequiredService<ICryptoService>();;
             IUsuarioRepository _usuarioRepository = scope.ServiceProvider.GetRequiredService<IUsuarioRepository>();;
         
@@ -60,6 +62,7 @@ public class InicializarDatabaseUseCase
                 AdicionarUsuarioUseCase adicionarUsuario = new AdicionarUsuarioUseCase(_cryptoService, _usuarioRepository, usuarioMaster);
                 adicionarUsuario.Execute();
             }
+            */
         }
     }
 }

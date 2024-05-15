@@ -5,6 +5,7 @@ using SuporteSolidarioBusiness.Application.DTOs;
 using SuporteSolidarioBusiness.Application.Repositories;
 using SuporteSolidarioBusiness.Application.Services;
 using SuporteSolidarioBusiness.Domain.Entities;
+using SuporteSolidarioBusiness.Domain.Enums;
 
 namespace SuporteSolidarioBusiness.Application.UseCases;
 
@@ -13,16 +14,17 @@ public class EfetuarLoginUseCase
     private readonly ICryptoService _cryptoService;
     private readonly ITokenService _tokenService;
     private readonly IAuthRepository _repo;
-
     private readonly LoginDTO _dto;
+    private readonly TipoUsuario _tipoUsuario;
 
 
-    public EfetuarLoginUseCase(ICryptoService cryptoService, ITokenService tokenService, IAuthRepository repo, LoginDTO dto)
+    public EfetuarLoginUseCase(ICryptoService cryptoService, ITokenService tokenService, IAuthRepository repo, LoginDTO dto, TipoUsuario tipoUsuario)
     {
         _cryptoService = cryptoService;
         _tokenService = tokenService;
         _repo = repo;
         _dto = dto;
+        _tipoUsuario = tipoUsuario;
     }
 
     public List<Claim> Execute()
@@ -46,12 +48,20 @@ public class EfetuarLoginUseCase
 
         UsuarioEntity usuario = _repo.GetUserByLogin(_dto.Login);
         if (usuario == null)
+        {
             throw new UnauthorizedAccessException("Login/senha inválido!");
+        }
+
+        if(usuario.TipoDeUsuario != _tipoUsuario)
+        {
+            throw new UnauthorizedAccessException("Login/senha inválido!");
+        }
 
         // Armazenando nome, id e cargo nos claims
         List<Claim> lstClaims = new List<Claim>();
         lstClaims.Add(new Claim(ClaimTypes.Name, usuario.Login));
         lstClaims.Add(new Claim("IdUsuario", usuario.Id.ToString()));
+        lstClaims.Add(new Claim("TipoDeUsuario", Convert.ToString((int) usuario.TipoDeUsuario)));
         lstClaims.Add(new Claim(ClaimTypes.Role, usuario.TipoDeUsuario.ToString()));
 
         return lstClaims;

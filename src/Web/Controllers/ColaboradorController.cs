@@ -8,6 +8,7 @@ using SuporteSolidarioBusiness.Application.Repositories;
 using SuporteSolidarioBusiness.Application.Services;
 using SuporteSolidarioBusiness.Application.UseCases;
 using SuporteSolidarioBusiness.Domain.Entities;
+using SuporteSolidarioBusiness.Domain.Enums;
 
 namespace SuporteSolidario.Controllers
 {
@@ -64,7 +65,7 @@ namespace SuporteSolidario.Controllers
                     Password1 = vmLogin.Password
                 };
 
-                EfetuarLoginUseCase useCase = new EfetuarLoginUseCase(_cryptoService, _tokenService, _repo, dto);
+                EfetuarLoginUseCase useCase = new EfetuarLoginUseCase(_cryptoService, _tokenService, _repo, dto, TipoUsuario.Colaborador);
                 List<Claim> lstClaims = useCase.Execute();
 
                 var authProperties = new AuthenticationProperties
@@ -88,6 +89,13 @@ namespace SuporteSolidario.Controllers
                 ViewData["LoginInvalido"] = e.Message;
                 return View();
             }
+        }
+
+        [HttpGet]
+        public ActionResult Logout()
+        {
+            HttpContext.SignOutAsync();
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
