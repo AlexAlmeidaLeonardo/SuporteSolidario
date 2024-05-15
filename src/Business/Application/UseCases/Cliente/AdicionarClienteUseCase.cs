@@ -28,7 +28,6 @@ public class AdicionarClienteUseCase
     {
         UsuarioEntity usuarioEntity = _usuarioRepository.Ler(_input.IdUsuario);
 
-
         // Verifica se o usuário é do tipo correto
         if (usuarioEntity.TipoDeUsuario == TipoUsuario.Colaborador)
         {

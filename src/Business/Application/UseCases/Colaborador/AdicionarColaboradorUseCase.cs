@@ -9,41 +9,36 @@ using SuporteSolidarioBusiness.Application.DTOs;
 
 public class AdicionarColaboradorUseCase
 {
-    private readonly string _tokenAtual;
     private readonly ITokenService _tokenService;
     private readonly IColaboradorRepository _repo;
+    private readonly IUsuarioRepository _usuarioRepository;
     private readonly ColaboradorEntity _input;
     private readonly IGeoLocalizacaoService _geolocalizacaoService;
 
-    public AdicionarColaboradorUseCase(string tokenAtual, IGeoLocalizacaoService geolocalizacaoService, ITokenService tokenService, IColaboradorRepository repo, ColaboradorEntity input)
+    public AdicionarColaboradorUseCase(IGeoLocalizacaoService geolocalizacaoService, ITokenService tokenService, IColaboradorRepository repo, IUsuarioRepository usuarioRepository, ColaboradorEntity input)
     {
-        _tokenAtual = tokenAtual;
         _tokenService = tokenService;
         _repo = repo;
+        _usuarioRepository = usuarioRepository;
         _input = input;
         _geolocalizacaoService = geolocalizacaoService;
     }
 
     public ColaboradorEntity Execute()
     {
-        // Recupera os dados do usuário através do token do usuário logado
-        UsuarioEntity usuarioDto = _tokenService.GetUsuarioDTO(_tokenAtual);
-        if(usuarioDto is null)
-        {
-            throw new AuthenticationException("Efetue o login antes de executar essa operação!");
-        }
+        UsuarioEntity usuarioEntity = _usuarioRepository.Ler(_input.IdUsuario);
 
         // Verifica se o usuário é do tipo correto
-        if (usuarioDto.TipoDeUsuario == TipoUsuario.Cliente)
+        if (usuarioEntity.TipoDeUsuario == TipoUsuario.Cliente)
         {
-            throw new Exception($"Usuário \"{usuarioDto.Login}\" é do tipo \"Cliente\".");
+            throw new Exception($"Usuário \"{usuarioEntity.Login}\" é do tipo \"Cliente\".");
         }
 
         // Verifica se o usuario logado já possui cadastro (neste caso, se ele tem cadastro de cliente)
-        bool possuiCadastro = _repo.ExisteLogin(usuarioDto.Id);
+        bool possuiCadastro = _repo.ExisteLogin(usuarioEntity.Id);
         if(possuiCadastro)
         {
-            throw new Exception($"Usuário \"{usuarioDto.Login}\" já possui cadastro no sistema.");
+            throw new Exception($"Usuário \"{usuarioEntity.Login}\" já possui cadastro no sistema.");
         }
         
         // Verifica se o endereço informado é válido
@@ -70,9 +65,9 @@ public class AdicionarColaboradorUseCase
         }
 
         // Preenche os dados necessários para o cadastro
-        _input.IdUsuario = usuarioDto.Id;
+        _input.IdUsuario = usuarioEntity.Id;
         _input.Ativo = true;
-        _input.Email = String.IsNullOrEmpty(_input.Email) ? usuarioDto.Email : _input.Email;
+        _input.Email = String.IsNullOrEmpty(_input.Email) ? usuarioEntity.Email : _input.Email;
         _input.Criacao = DateTime.Now;
         _input.Alteracao = _input.Criacao;
 

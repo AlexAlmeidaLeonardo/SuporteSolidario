@@ -12,20 +12,22 @@ using SuporteSolidarioBusiness.Domain.Enums;
 
 namespace SuporteSolidario.Controllers
 {
-    public class ClienteController : Controller
+    public class ClienteController : BaseController
     {
         private readonly ICryptoService _cryptoService;
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly IClienteRepository _clienteRepository;
         private readonly ITokenService _tokenService;
+        private readonly IGeoLocalizacaoService _geoLocalizacaoService;
         private readonly IAuthRepository _repo;
 
-        public ClienteController(ICryptoService cryptoService, IUsuarioRepository usuarioRepository, IClienteRepository clienteRepository, ITokenService tokenService, IAuthRepository repo)
+        public ClienteController(ICryptoService cryptoService, IUsuarioRepository usuarioRepository, IClienteRepository clienteRepository, ITokenService tokenService, IAuthRepository repo, IGeoLocalizacaoService geoLocalizacaoService)
         {
             _cryptoService = cryptoService;
             _usuarioRepository = usuarioRepository;
             _clienteRepository = clienteRepository;
             _tokenService = tokenService;
+            _geoLocalizacaoService = geoLocalizacaoService;
             _repo = repo;
         }
 
@@ -105,17 +107,86 @@ namespace SuporteSolidario.Controllers
         }
 
         [HttpGet]
-        public ActionResult Edit(long id)
+        public ActionResult Create()
+        {
+            try
+            {
+                ViewData["FormAction"] = "Create";
+
+                string valor = HttpContext.User.FindFirstValue("IdUsuario");
+                if(string.IsNullOrEmpty(valor))
+                {
+                    return RedirectToAction("Index", "Cliente");
+                }
+
+                long idUsuario = Int64.Parse(valor);
+
+                ExisteClienteComIdUsuarioUseCase existeClienteComIdUsuario = new ExisteClienteComIdUsuarioUseCase(_clienteRepository, idUsuario);
+
+                if(existeClienteComIdUsuario.Execute())
+                {
+                    return RedirectToAction("Index", "Cliente");
+                }
+
+                ClienteViewModel viewModel = new ClienteViewModel();
+                viewModel.IdUsuario = idUsuario;
+    
+                return View(viewModel);
+            }
+            catch (Exception e)
+            {                
+                ViewData["MensagemErro"] = e.Message;
+                return View();
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(ClienteViewModel viewModel)
+        {
+            try
+            {
+                ClienteEntity input = ViewModelToEntity.MapCliente(viewModel);
+
+                AdicionarClienteUseCase useCase = new AdicionarClienteUseCase(
+                    _geoLocalizacaoService,
+                    _tokenService,
+                    _clienteRepository,
+                    _usuarioRepository,
+                    input);
+
+                useCase.Execute();
+
+                return RedirectToAction("Index");
+            }
+            catch(Exception e)
+            {
+                return View(viewModel);
+            }
+        }
+
+
+
+        [HttpGet]
+        public ActionResult Edit()
         {
             try
             {
                 ViewData["FormAction"] = "Edit";
+
+                string valor = HttpContext.User.FindFirstValue("IdUsuario");
+                if(string.IsNullOrEmpty(valor))
+                {
+                    return RedirectToAction("Index", "Cliente");
+                }
+
+                long id = Int64.Parse(valor);
     
                 BuscarClienteUseCase useCase = new BuscarClienteUseCase(_clienteRepository, id);
     
-                ClienteEntity clienteEntity = useCase.Execute();
+                ClienteEntity entity = useCase.Execute();
     
-                ClienteViewModel viewModel = EntityToViewModel.MapCliente(clienteEntity);
+                ClienteViewModel viewModel = EntityToViewModel.MapCliente(entity);
     
                 return View(viewModel);
             }

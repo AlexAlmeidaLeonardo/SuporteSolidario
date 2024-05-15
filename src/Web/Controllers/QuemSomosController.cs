@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace SuporteSolidario.Controllers
 {
-    public class QuemSomosController : Controller
+    public class QuemSomosController : BaseController
     {
         // GET: QuemSomosController
         public ActionResult Index()

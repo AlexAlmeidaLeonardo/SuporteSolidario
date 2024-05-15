@@ -12,20 +12,22 @@ using SuporteSolidarioBusiness.Domain.Enums;
 
 namespace SuporteSolidario.Controllers
 {
-    public class ColaboradorController : Controller
+    public class ColaboradorController : BaseController
     {
         private readonly ICryptoService _cryptoService;
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly IColaboradorRepository _colaboradorRepository;
         private readonly ITokenService _tokenService;
+        private readonly IGeoLocalizacaoService _geoLocalizacaoService;
         private readonly IAuthRepository _repo;
 
-        public ColaboradorController(ICryptoService cryptoService, IColaboradorRepository colaboradorRepository, IUsuarioRepository usuarioRepository, ITokenService tokenService, IAuthRepository repo)
+        public ColaboradorController(ICryptoService cryptoService, IColaboradorRepository colaboradorRepository, IUsuarioRepository usuarioRepository, ITokenService tokenService, IAuthRepository repo, IGeoLocalizacaoService geoLocalizacaoService)
         {
             _cryptoService = cryptoService;
             _usuarioRepository = usuarioRepository;
             _colaboradorRepository = colaboradorRepository;
             _tokenService = tokenService;
+            _geoLocalizacaoService = geoLocalizacaoService;
             _repo = repo;
         }
 
@@ -105,17 +107,85 @@ namespace SuporteSolidario.Controllers
         }
 
         [HttpGet]
-        public ActionResult Edit(long id)
+        public ActionResult Create()
+        {
+            try
+            {
+                ViewData["FormAction"] = "Create";
+
+                string valor = HttpContext.User.FindFirstValue("IdUsuario");
+                if(string.IsNullOrEmpty(valor))
+                {
+                    return RedirectToAction("Index", "Colaborador");
+                }
+
+                long idUsuario = Int64.Parse(valor);
+
+                ExisteColaboradorComIdUsuarioUseCase existeClienteComIdUsuario = new ExisteColaboradorComIdUsuarioUseCase(_colaboradorRepository, idUsuario);
+
+                if(existeClienteComIdUsuario.Execute())
+                {
+                    return RedirectToAction("Index", "Colaborador");
+                }
+
+                ColaboradorViewModel viewModel = new ColaboradorViewModel();
+                viewModel.IdUsuario = idUsuario;
+    
+                return View(viewModel);
+            }
+            catch (Exception e)
+            {                
+                ViewData["MensagemErro"] = e.Message;
+                return View();
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(ColaboradorViewModel viewModel)
+        {
+            try
+            {
+                ColaboradorEntity input = ViewModelToEntity.MapColaborador(viewModel);
+
+                AdicionarColaboradorUseCase useCase = new AdicionarColaboradorUseCase(
+                    _geoLocalizacaoService,
+                    _tokenService,
+                    _colaboradorRepository,
+                    _usuarioRepository,
+                    input);
+
+                useCase.Execute();
+
+                return RedirectToAction("Index");
+            }
+            catch(Exception e)
+            {
+                return View(viewModel);
+            }
+        }
+
+
+        [HttpGet]
+        public ActionResult Edit()
         {
             try
             {
                 ViewData["FormAction"] = "Edit";
+
+                string valor = HttpContext.User.FindFirstValue("IdUsuario");
+                if(string.IsNullOrEmpty(valor))
+                {
+                    return RedirectToAction("Index", "Colaborador");
+                }
+
+                long id = Int64.Parse(valor);
     
                 BuscarColaboradorUseCase useCase = new BuscarColaboradorUseCase(_colaboradorRepository, id);
     
-                ColaboradorEntity colaboradorEntity = useCase.Execute();
+                ColaboradorEntity entity = useCase.Execute();
     
-                ColaboradorViewModel viewModel = EntityToViewModel.MapColaborador(colaboradorEntity);
+                ColaboradorViewModel viewModel = EntityToViewModel.MapColaborador(entity);
     
                 return View(viewModel);
             }

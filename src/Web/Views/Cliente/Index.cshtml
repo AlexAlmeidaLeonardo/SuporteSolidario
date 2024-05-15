@@ -1,11 +1,43 @@
-
 @{
     ViewData["Title"] = "Painel do Cliente";
+    bool modoDev = true;
 }
 
 <h1>@ViewData["Title"]</h1>
-<h4>Aqui teremos a página com o painel de controle do cliente</h4>
 
-<div class="row">
-    <img src="~/img/rascunhos/perfil_cliente.jpeg" width="100px" height="550px" />
-</div>
+@if(modoDev)
+{
+    <div class="row">
+        <a href="@Url.Action("Edit", "Cliente")" class="btn btn-primary btn-block mt-3">Conta</a>
+    </div>
+    <div class="row">
+        <a href="#" class="btn btn-primary btn-block mt-3">Pedidos</a>
+    </div>
+    <div class="row">
+        <a href="#" class="btn btn-primary btn-block mt-3">Histórico</a>
+    </div>
+    <div class="row">
+        <a href="#" class="btn btn-primary btn-block mt-3">Ranking</a>
+    </div>
+    <div class="row">
+        <a href="#" class="btn btn-primary btn-block mt-3">Logout</a>
+    </div>
+    <div class="row">
+        <a href="#" class="btn btn-primary btn-block mt-3">Solicitar Serviço</a>
+    </div>
+    <div class="row">
+        <a href="#" class="btn btn-primary btn-block mt-3">Gerenciar Solicitações</a>
+    </div>
+    <div class="row">
+        <a href="#" class="btn btn-primary btn-block mt-3">Favoritos</a>
+    </div>
+}
+else
+{
+    <h4>Aqui teremos a página com o painel de controle do cliente</h4>
+    <div class="row">
+        <img src="~/img/rascunhos/perfil_cliente.jpeg" width="100px" height="550px" />
+    </div>
+}
+
+

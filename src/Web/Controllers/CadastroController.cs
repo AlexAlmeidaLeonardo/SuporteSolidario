@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace SuporteSolidario.Controllers
 {
-    public class CadastroController : Controller
+    public class CadastroController : BaseController
     {
         // GET: CadastroController
         public ActionResult Cliente()
