@@ -19,7 +19,7 @@ public class AdicionarUsuarioUseCase
         this._dto = entity;
     }
 
-    internal void Execute()
+    public void Execute()
     {
         if(_dto.Password1 != _dto.Password2)
         {

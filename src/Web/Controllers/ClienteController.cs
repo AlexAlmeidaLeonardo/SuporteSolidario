@@ -44,6 +44,40 @@ namespace SuporteSolidario.Controllers
         }
 
         [HttpGet]
+        public ActionResult SignUp()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult SignUp(SignUpViewModel vmSignUp)
+        {
+            if(vmSignUp == null)
+                return View();
+
+            UsuarioEntity usuario = new UsuarioEntity();
+            usuario.Login = vmSignUp.Login;
+            usuario.Password1 = vmSignUp.Password;
+            usuario.Password2 = vmSignUp.Password2;
+            usuario.Email = vmSignUp.Email;
+            usuario.Celular = vmSignUp.Celular;
+            usuario.TipoDeUsuario = TipoUsuario.Cliente;
+
+            try
+            {
+                AdicionarUsuarioUseCase useCase = new AdicionarUsuarioUseCase(_cryptoService,_usuarioRepository,usuario);
+                useCase.Execute();
+
+                return RedirectToAction("Index", "Cliente");
+            }
+            catch(Exception e)
+            {
+                ViewData["MensagemErro"] = e.Message;
+                return View();
+            }
+        }
+
+        [HttpGet]
         public ActionResult Login()
         {
             if (HttpContext.User.Identity.IsAuthenticated)
@@ -164,8 +198,6 @@ namespace SuporteSolidario.Controllers
                 return View(viewModel);
             }
         }
-
-
 
         [HttpGet]
         public ActionResult Edit()
