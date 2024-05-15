@@ -75,7 +75,6 @@
                         {
                             <li class="nav-item"><a href="@Url.Action("Index", "Colaborador")" class="nav-link text-write">Área do Colaborador</a></li>
                         }
-
                         @if(httpContext.User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item"><a href="@Url.Action("Logout", @controllerParaLogout)" class="nav-link text-write">Sair</a></li>
