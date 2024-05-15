@@ -62,6 +62,15 @@ public class SolicitacaoRepository : ISolicitacaoRepository
         return saida;
     }
 
+    public IEnumerable<SolicitacaoModel> GetSolicitacoesAbertas(long idCliente)
+    {
+        IEnumerable<SolicitacaoModel> lst = _context.Solicitacoes
+                                                    .Where( x => x.IdCliente == idCliente && x.EmAberto)
+                                                    .OrderBy(o => o.Data)
+                                                    .ToList();
+        return lst;
+    }
+
     public SolicitacaoEntity Ler(long id)
     {
         SolicitacaoModel? model = _context.Solicitacoes.Where(x => x.Id == id).FirstOrDefault();

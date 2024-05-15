@@ -7,4 +7,5 @@ public interface ISolicitacaoRepository
     SolicitacaoEntity Adicionar(SolicitacaoEntity obj);
     IEnumerable<SolicitacaoModel> BuscarPorColaborador(long idColaborador, double _distanciaEmKm);
     SolicitacaoModel GetSolicitacaoAberta(long idCliente, long idServico);
+    IEnumerable<SolicitacaoModel> GetSolicitacoesAbertas(long idCliente);
 }
