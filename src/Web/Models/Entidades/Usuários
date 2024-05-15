@@ -1,0 +1,13 @@
+public class Usuarios
+{
+    private long id { get; set; }
+    private double tipo_de_usuario { get; set; }
+    private string login { get; set; }
+    private string email { get; set; }
+    private string celular { get; set; }
+    private string hash { get; set; }
+    private string salt { get; set; }
+    private string criacao { get; set; } //quando for criado, então tempo
+    private string alteracao { get; set; }
+    private bool ativo { get; set; }
+}

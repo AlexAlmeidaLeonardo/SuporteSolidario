@@ -1,0 +1,10 @@
+public class Atendimentos
+{
+    private long id { get; set; }
+    private long id_solicitacao { get; set; }
+    private long id_colaborador { get; set; }
+    private string atendido_em { get; set; }
+    private string confirmado_em { get; set; }
+    private string finalizado_em { get; set; }
+    private double avaliacao { get; set; }
+}

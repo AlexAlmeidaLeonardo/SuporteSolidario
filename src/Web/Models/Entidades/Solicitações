@@ -1,0 +1,19 @@
+public class Solicitacoes
+{
+    private long id { get; set; }
+    private long id_cliente { get; set; }
+    private long id_servico { get; set; }
+    private string data { get; set; }
+    private string detalhes { get; set; }
+    private string data_servico { get; set; }
+    private bool em_aberto { get; set; }
+    private string bairro { get; set; }
+    private string cep { get; set; }
+    private string cidade { get; set; }
+    private string endereco { get; set; }
+    private string estado { get; set; }
+    private string logradouro { get; set; }
+    private long latitude { get; set; }
+    private long longitude { get; set; }
+    private double numero { get; set; }
+}

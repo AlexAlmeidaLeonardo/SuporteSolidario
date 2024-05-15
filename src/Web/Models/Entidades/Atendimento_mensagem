@@ -1,0 +1,10 @@
+public class Atendimento_mensagem
+{
+    private long id { get; set; }
+    private long id_atendimento { get; set; }
+    private string criacao { get; set; }
+    private string alteracao { get; set; }
+    private bool is_cliente { get; set; }
+    private string mensagem { get; set; }
+    private long id_em_resposta { get; set; }
+}
