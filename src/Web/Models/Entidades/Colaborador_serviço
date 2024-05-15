@@ -1,0 +1,6 @@
+public class Colaborador_servico
+{
+    private long id { get; set; }
+    private long id_colaborador { get; set; }
+    private long id_servico { get; set; }
+}

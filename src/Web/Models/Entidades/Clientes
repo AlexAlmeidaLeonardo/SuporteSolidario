@@ -1,0 +1,27 @@
+public class Clientes
+{
+    private long id { get; set; }
+    private long id_usuario { get; set; }
+    private string nome { get; set; }
+    private string sobrenome { get; set; }
+    private string cpf { get; set; }
+    private string cep { get; set; }
+    private string logradouro { get; set; }
+    private string endereco { get; set; }
+    private double numero { get; set; }
+    private string bairro { get; set; }
+    private string cidade { get; set; }
+    private string estado { get; set; }
+    private double latitude { get; set; }
+    private double longitude { get; set; }
+    private string ddd_telefone { get; set; }
+    private string telefone { get; set; }
+    private string ddd_celular { get; set; }
+    private string celular { get; set; }
+    private string email { get; set; }
+    private bool ativo { get; set; }
+    private bool possui_coordenadas_gps { get; set; }
+    private string criacao { get; set; }
+    private string alteracao { get; set; }
+    private string inativacao { get; set; }
+}
