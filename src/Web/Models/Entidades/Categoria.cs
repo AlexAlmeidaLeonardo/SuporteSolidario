@@ -1,6 +1,6 @@
 public class Categoria
 {
-    private long Id { get; set; }
-    private string Descricao { get; set; }
+    public long Id { get; set; }
+    public string Descricao { get; set; }
     
 }

@@ -17,6 +17,7 @@ namespace SuporteSolidario.Controllers
         private readonly ICryptoService _cryptoService;
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly IClienteRepository _clienteRepository;
+        private readonly ISolicitacaoRepository _solicitacaoRepository;
         private readonly ITokenService _tokenService;
         private readonly IGeoLocalizacaoService _geoLocalizacaoService;
         private readonly IAuthRepository _repo;
@@ -248,5 +249,33 @@ namespace SuporteSolidario.Controllers
                 return View();
             }            
         }
+    
+        [HttpGet]
+        public ActionResult Solicitacoes()
+        {
+            try
+            {
+                string valor = HttpContext.User.FindFirstValue("IdUsuario");
+                if(string.IsNullOrEmpty(valor))
+                {
+                    return RedirectToAction("Index", "Cliente");
+                }
+
+                long id = Int64.Parse(valor);
+
+                SolicitacoesEmAbertoUseCase solicitacoesEmAberto = new SolicitacoesEmAbertoUseCase(_solicitacaoRepository, id);
+                IEnumerable<SolicitacaoModel> lst = solicitacoesEmAberto.Execute();
+
+                SolicitacoesViewModel solicitacoes = new SolicitacoesViewModel(lst);
+
+                return View(solicitacoes);
+            }
+            catch(Exception e)
+            {
+                ViewData["MensagemErro"] = e.Message;
+                return View();
+            }
+        }
+    
     }
 }
