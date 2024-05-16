@@ -76,4 +76,18 @@ public class ColaboradorMySqlRepository : IColaboradorRepository
 
         return ModelToEntity.MapListColaborador(models);        
     }
+
+    public ColaboradorEntity LerByUsuario(long id)
+    {
+        ColaboradorModel? model = _context.Colaboradores.Where(x => x.IdUsuario == id).FirstOrDefault();
+        
+        if(model is null)
+        {
+            throw new NotFoundException($"Colaborador com id de usuário {id} não encontrado");
+        }
+
+        ColaboradorEntity entity = ModelToEntity.MapColaborador(model);
+
+        return entity;
+    }
 }

@@ -1,76 +1,55 @@
+@using SuporteSolidarioBusiness.Domain.Enums
 @model SignUpViewModel
 
 @{
-    ViewData["Title"] = "Inscrição";
+    ViewData["Title"] = "Inscrição do Cliente";
 }
 
-<h1>@ViewData["Title"]</h1>
-
+<h2>@ViewData["Title"]</h2>
 <hr />
-<form asp-action="SignUp">
-    <div class="row">
-        <div class="col-md-4">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Login" class="control-label"></label>
-                <input asp-for="Login" class="form-control" />
-                <span asp-validation-for="Login" class="text-danger"></span>
-            </div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            @using (Html.BeginForm("SignUp", "Cliente", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="form-group mt-3">
+                    @Html.LabelFor(model => model.Login, new { @class = "control-label" })
+                    @Html.EditorFor(model => model.Login, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Login, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group mt-3">
+                    @Html.LabelFor(model => model.Email, new { @class = "control-label" })
+                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group mt-3">
+                    @Html.LabelFor(model => model.Celular, new { @class = "control-label" })
+                    @Html.EditorFor(model => model.Celular, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Celular, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group mt-3">
+                    @Html.LabelFor(model => model.Password, new { @class = "control-label" })
+                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group mt-3">
+                    @Html.LabelFor(model => model.Password2, new { @class = "control-label" })
+                    @Html.EditorFor(model => model.Password2, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Password2, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group mt-4">
+                    <input type="submit" value="Cadastrar" class="btn btn-primary" />
+                </div>
+            }
         </div>
     </div>
-    <br/>
-    <div class="row">
-        <div class="col-md-4">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Celular" class="control-label"></label>
-                <input asp-for="Celular" class="form-control" />
-                <span asp-validation-for="Celular" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-    <br/>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                <label asp-for="Password2" class="control-label"></label>
-                <input asp-for="Password2" class="form-control" />
-                <span asp-validation-for="Password2" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-    <br/>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="form-group">
-                <label asp-for="TipoDeUsuario" class="control-label"></label>
-                <input asp-for="TipoDeUsuario" class="form-control" />
-                <span asp-validation-for="TipoDeUsuario" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-    <br/>
-    <hr/>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="form-group">
-                <input type="submit" value="Cadastrar" class="btn btn-primary" />
-            </div>
-        </div>
-    </div>
-</form>
+</div>

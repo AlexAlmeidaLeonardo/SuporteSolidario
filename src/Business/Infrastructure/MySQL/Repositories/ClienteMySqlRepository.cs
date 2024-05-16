@@ -69,4 +69,18 @@ public class ClienteMySqlRepository : IClienteRepository
 
         return existe;
     }
+
+    public ClienteEntity LerByUsuario(long id)
+    {
+        ClienteModel? model = _context.Clientes.Where(x => x.IdUsuario == id).FirstOrDefault();
+
+        if(model is null)
+        {
+            throw new NotFoundException($"Cliente com id {id} não encontrado");
+        }
+
+        ClienteEntity entity = ModelToEntity.MapCliente(model);
+
+        return entity;
+    }
 }

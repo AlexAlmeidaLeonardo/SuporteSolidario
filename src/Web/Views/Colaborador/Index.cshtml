@@ -1,10 +1,28 @@
 @{
     ViewData["Title"] = "Painel do Colaborador";
+    bool modoDev = true;
 }
-
+@if(modoDev)
+{
+    <div class="row">
+        <a href="@Url.Action("Edit", "Colaborador")" class="btn btn-primary btn-block mt-3">Conta</a>
+    </div>
+    <div class="row">
+        <a href="#" class="btn btn-primary btn-block mt-3">Serviços</a>
+    </div>
+    <div class="row">
+        <a href="#" class="btn btn-primary btn-block mt-3">Clientes</a>
+    </div>
+    <div class="row">
+        <a href="#" class="btn btn-primary btn-block mt-3">Logout</a>
+    </div>
+}
+else
+{
 <h1>@ViewData["Title"]</h1>
 <h4>Aqui teremos a página com o painel de controle do colaborador</h4>
 
 <div class="row">
     <img src="~/img/rascunhos/perfil_colaborador.jpeg" width="100px" height="550px" />
 </div>
+}

@@ -216,7 +216,7 @@ namespace SuporteSolidario.Controllers
 
                 long id = Int64.Parse(valor);
     
-                BuscarColaboradorUseCase useCase = new BuscarColaboradorUseCase(_colaboradorRepository, id);
+                BuscarColaboradorByUsuarioUseCase useCase = new BuscarColaboradorByUsuarioUseCase(_colaboradorRepository, id);
     
                 ColaboradorEntity entity = useCase.Execute();
     
