@@ -1,6 +1,5 @@
-public class Categoria
+public class Categoria: BaseModel
 {
-    public long Id { get; set; }
     public string Descricao { get; set; }
     
 }

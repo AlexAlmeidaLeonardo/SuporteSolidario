@@ -1,6 +1,0 @@
-public class Servicos
-{
-    private long id { get; set; }
-    private long id_categoria { get; set; }
-    private string descricao { get; set; }
-}
