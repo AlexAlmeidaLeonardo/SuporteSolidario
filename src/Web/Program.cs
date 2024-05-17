@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using SuporteSolidarioBusiness.Application.Repositories;
 using SuporteSolidarioBusiness.Application.Services;
+using SuporteSolidarioBusiness.Application.UseCases;
 using SuporteSolidarioBusiness.Infrastructure.MySQL.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -47,9 +48,6 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-
-
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -61,5 +59,9 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+// Realizará a inicialização do banco de dados, caso já não tenha sido inicializado
+InicializarDatabaseUseCase inicializarDatabase = new InicializarDatabaseUseCase(app.Services);
+inicializarDatabase.Execute();
 
 app.Run();

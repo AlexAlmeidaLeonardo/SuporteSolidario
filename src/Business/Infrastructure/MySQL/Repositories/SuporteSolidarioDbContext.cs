@@ -26,7 +26,8 @@ public class SuporteSolidarioDbContext: DbContext
     {
         try
         {
-            Database.Migrate();
+            //Database.Migrate();
+            Database.EnsureCreated();
             return true;
         }
         catch
@@ -37,8 +38,7 @@ public class SuporteSolidarioDbContext: DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        string connectionString = "server=localhost;user=root;password=gambito;database=suporte_solidario";
-      //string connectionString = "server=localhost;user=root;password=gambito";
+        string connectionString = "server=localhost;user=root;password=senha_do_mysql;database=suporte_solidario";
         optionsBuilder.UseMySql
         (
             connectionString

@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Security.Policy;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -22,11 +23,12 @@ namespace SuporteSolidario.Controllers
         private readonly IGeoLocalizacaoService _geoLocalizacaoService;
         private readonly IAuthRepository _repo;
 
-        public ClienteController(ICryptoService cryptoService, IUsuarioRepository usuarioRepository, IClienteRepository clienteRepository, ITokenService tokenService, IAuthRepository repo, IGeoLocalizacaoService geoLocalizacaoService)
+        public ClienteController(ICryptoService cryptoService, IUsuarioRepository usuarioRepository, IClienteRepository clienteRepository, ISolicitacaoRepository solicitacaoRepository, ITokenService tokenService, IAuthRepository repo, IGeoLocalizacaoService geoLocalizacaoService)
         {
             _cryptoService = cryptoService;
             _usuarioRepository = usuarioRepository;
             _clienteRepository = clienteRepository;
+            _solicitacaoRepository = solicitacaoRepository;
             _tokenService = tokenService;
             _geoLocalizacaoService = geoLocalizacaoService;
             _repo = repo;
@@ -41,18 +43,52 @@ namespace SuporteSolidario.Controllers
                 return RedirectToAction("Login","Cliente");
             }
 
+            if (TipoUsuarioAutenticado != TipoUsuario.Cliente)
+            {
+                return RedirectToAction("Index","Home");
+            }
+
+            ExisteClienteComIdUsuarioUseCase existeClienteComIdUsuario = new ExisteClienteComIdUsuarioUseCase(_clienteRepository,  IdUsuarioAutenticado);
+            bool existeCliente = existeClienteComIdUsuario.Execute();
+            if(!existeCliente)
+            {
+                return RedirectToAction("Create","Cliente");
+            }
+
             return View();
         }
 
         [HttpGet]
         public ActionResult SignUp()
         {
+            if (!HttpContext.User.Identity.IsAuthenticated)
+            {
+                HttpContext.SignOutAsync();
+                return RedirectToAction("Login","Cliente");
+            }
+
+            if (TipoUsuarioAutenticado != TipoUsuario.Cliente)
+            {
+                return RedirectToAction("Index","Home");
+            }
+
             return View();
         }
 
         [HttpPost]
         public ActionResult SignUp(SignUpViewModel vmSignUp)
         {
+            if (!HttpContext.User.Identity.IsAuthenticated)
+            {
+                HttpContext.SignOutAsync();
+                return RedirectToAction("Login","Cliente");
+            }
+
+            if (TipoUsuarioAutenticado != TipoUsuario.Cliente)
+            {
+                return RedirectToAction("Index","Home");
+            }
+            
             if(vmSignUp == null)
                 return View();
 
@@ -146,25 +182,15 @@ namespace SuporteSolidario.Controllers
         {
             try
             {
+                if (TipoUsuarioAutenticado != TipoUsuario.Cliente)
+                {
+                    return RedirectToAction("Index","Home");
+                }
+
                 ViewData["FormAction"] = "Create";
 
-                string valor = HttpContext.User.FindFirstValue("IdUsuario");
-                if(string.IsNullOrEmpty(valor))
-                {
-                    return RedirectToAction("Index", "Cliente");
-                }
-
-                long idUsuario = Int64.Parse(valor);
-
-                ExisteClienteComIdUsuarioUseCase existeClienteComIdUsuario = new ExisteClienteComIdUsuarioUseCase(_clienteRepository, idUsuario);
-
-                if(existeClienteComIdUsuario.Execute())
-                {
-                    return RedirectToAction("Index", "Cliente");
-                }
-
                 ClienteViewModel viewModel = new ClienteViewModel();
-                viewModel.IdUsuario = idUsuario;
+                viewModel.IdUsuario = IdUsuarioAutenticado;
     
                 return View(viewModel);
             }
@@ -205,20 +231,22 @@ namespace SuporteSolidario.Controllers
         {
             try
             {
-                ViewData["FormAction"] = "Edit";
-
-                string valor = HttpContext.User.FindFirstValue("IdUsuario");
-                if(string.IsNullOrEmpty(valor))
+                if (TipoUsuarioAutenticado != TipoUsuario.Cliente)
                 {
-                    return RedirectToAction("Index", "Cliente");
+                    return RedirectToAction("Index","Home");
+                }
+                
+                ExisteClienteComIdUsuarioUseCase existeClienteComIdUsuario = new ExisteClienteComIdUsuarioUseCase(_clienteRepository,  IdUsuarioAutenticado);
+                bool existeCliente = existeClienteComIdUsuario.Execute();
+                if(!existeCliente)
+                {
+                    return RedirectToAction("Create","Cliente");
                 }
 
-                long id = Int64.Parse(valor);
-    
-                BuscarClienteUseCase useCase = new BuscarClienteUseCase(_clienteRepository, id);
-    
+                ViewData["FormAction"] = "Edit";
+                
+                BuscarClienteUseCase useCase = new BuscarClienteUseCase(_clienteRepository, IdUsuarioAutenticado);
                 ClienteEntity entity = useCase.Execute();
-    
                 ClienteViewModel viewModel = EntityToViewModel.MapCliente(entity);
     
                 return View(viewModel);
@@ -236,6 +264,18 @@ namespace SuporteSolidario.Controllers
         {
             try
             {
+                if (TipoUsuarioAutenticado != TipoUsuario.Cliente)
+                {
+                    return RedirectToAction("Index","Home");
+                }
+                
+                ExisteClienteComIdUsuarioUseCase existeClienteComIdUsuario = new ExisteClienteComIdUsuarioUseCase(_clienteRepository,  IdUsuarioAutenticado);
+                bool existeCliente = existeClienteComIdUsuario.Execute();
+                if(!existeCliente)
+                {
+                    return RedirectToAction("Create","Cliente");
+                }
+
                 ClienteEntity input = ViewModelToEntity.MapCliente(viewModel);
     
                 AtualizarClienteUseCase useCase = new AtualizarClienteUseCase(_clienteRepository, input);
@@ -255,15 +295,19 @@ namespace SuporteSolidario.Controllers
         {
             try
             {
-                string valor = HttpContext.User.FindFirstValue("IdUsuario");
-                if(string.IsNullOrEmpty(valor))
+                if (TipoUsuarioAutenticado != TipoUsuario.Cliente)
                 {
-                    return RedirectToAction("Index", "Cliente");
+                    return RedirectToAction("Index","Home");
                 }
 
-                long id = Int64.Parse(valor);
+                ExisteClienteComIdUsuarioUseCase existeClienteComIdUsuario = new ExisteClienteComIdUsuarioUseCase(_clienteRepository,  IdUsuarioAutenticado);
+                bool existeCliente = existeClienteComIdUsuario.Execute();
+                if(!existeCliente)
+                {
+                    return RedirectToAction("Create","Cliente");
+                }
 
-                SolicitacoesEmAbertoUseCase solicitacoesEmAberto = new SolicitacoesEmAbertoUseCase(_solicitacaoRepository, id);
+                SolicitacoesEmAbertoUseCase solicitacoesEmAberto = new SolicitacoesEmAbertoUseCase(_solicitacaoRepository, IdUsuarioAutenticado);
                 IEnumerable<SolicitacaoModel> lst = solicitacoesEmAberto.Execute();
 
                 SolicitacoesViewModel solicitacoes = new SolicitacoesViewModel(lst);

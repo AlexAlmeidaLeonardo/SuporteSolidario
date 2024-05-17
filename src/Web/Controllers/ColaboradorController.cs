@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Security.Policy;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -40,18 +41,51 @@ namespace SuporteSolidario.Controllers
                 return RedirectToAction("Login","Colaborador");
             }
 
+            if (TipoUsuarioAutenticado != TipoUsuario.Colaborador)
+            {
+                return RedirectToAction("Index","Home");
+            }
+            
+            ExisteColaboradorComIdUsuarioUseCase existeColaboradorComIdUsuario = new ExisteColaboradorComIdUsuarioUseCase(_colaboradorRepository,  IdUsuarioAutenticado);
+            bool existeCliente = existeColaboradorComIdUsuario.Execute();
+            if(!existeCliente)
+            {
+                return RedirectToAction("Create","Colaborador");
+            }
+
             return View();
         }
 
         [HttpGet]
         public ActionResult SignUp()
         {
+            if (!HttpContext.User.Identity.IsAuthenticated)
+            {
+                HttpContext.SignOutAsync();
+                return RedirectToAction("Login","Colaborador");
+            }
+
+            if (TipoUsuarioAutenticado != TipoUsuario.Colaborador)
+            {
+                return RedirectToAction("Index","Home");
+            }
             return View();
         }
 
         [HttpPost]
         public ActionResult SignUp(SignUpViewModel vmSignUp)
         {
+            if (!HttpContext.User.Identity.IsAuthenticated)
+            {
+                HttpContext.SignOutAsync();
+                return RedirectToAction("Login","Colaborador");
+            }
+
+            if (TipoUsuarioAutenticado != TipoUsuario.Colaborador)
+            {
+                return RedirectToAction("Index","Home");
+            }
+            
             if(vmSignUp == null)
                 return View();
 
@@ -76,7 +110,6 @@ namespace SuporteSolidario.Controllers
                 return View();
             }
         }
-
 
         [HttpGet]
         public ActionResult Login()
@@ -146,25 +179,15 @@ namespace SuporteSolidario.Controllers
         {
             try
             {
+                if (TipoUsuarioAutenticado != TipoUsuario.Colaborador)
+                {
+                    return RedirectToAction("Index","Home");
+                }
+                
                 ViewData["FormAction"] = "Create";
 
-                string valor = HttpContext.User.FindFirstValue("IdUsuario");
-                if(string.IsNullOrEmpty(valor))
-                {
-                    return RedirectToAction("Index", "Colaborador");
-                }
-
-                long idUsuario = Int64.Parse(valor);
-
-                ExisteColaboradorComIdUsuarioUseCase existeClienteComIdUsuario = new ExisteColaboradorComIdUsuarioUseCase(_colaboradorRepository, idUsuario);
-
-                if(existeClienteComIdUsuario.Execute())
-                {
-                    return RedirectToAction("Index", "Colaborador");
-                }
-
                 ColaboradorViewModel viewModel = new ColaboradorViewModel();
-                viewModel.IdUsuario = idUsuario;
+                viewModel.IdUsuario = IdUsuarioAutenticado;
     
                 return View(viewModel);
             }
@@ -200,26 +223,27 @@ namespace SuporteSolidario.Controllers
             }
         }
 
-
         [HttpGet]
         public ActionResult Edit()
         {
             try
             {
-                ViewData["FormAction"] = "Edit";
-
-                string valor = HttpContext.User.FindFirstValue("IdUsuario");
-                if(string.IsNullOrEmpty(valor))
+                if (TipoUsuarioAutenticado != TipoUsuario.Colaborador)
                 {
-                    return RedirectToAction("Index", "Colaborador");
+                    return RedirectToAction("Index","Home");
+                }
+                
+                ExisteColaboradorComIdUsuarioUseCase existeColaboradorComIdUsuario = new ExisteColaboradorComIdUsuarioUseCase(_colaboradorRepository,  IdUsuarioAutenticado);
+                bool existeCliente = existeColaboradorComIdUsuario.Execute();
+                if(!existeCliente)
+                {
+                    return RedirectToAction("Create","Colaborador");
                 }
 
-                long id = Int64.Parse(valor);
+                ViewData["FormAction"] = "Edit";
     
-                BuscarColaboradorByUsuarioUseCase useCase = new BuscarColaboradorByUsuarioUseCase(_colaboradorRepository, id);
-    
+                BuscarColaboradorByUsuarioUseCase useCase = new BuscarColaboradorByUsuarioUseCase(_colaboradorRepository, IdUsuarioAutenticado);
                 ColaboradorEntity entity = useCase.Execute();
-    
                 ColaboradorViewModel viewModel = EntityToViewModel.MapColaborador(entity);
     
                 return View(viewModel);
@@ -237,6 +261,18 @@ namespace SuporteSolidario.Controllers
         {
             try
             {
+                if (TipoUsuarioAutenticado != TipoUsuario.Colaborador)
+                {
+                    return RedirectToAction("Index","Home");
+                }
+                
+                ExisteColaboradorComIdUsuarioUseCase existeColaboradorComIdUsuario = new ExisteColaboradorComIdUsuarioUseCase(_colaboradorRepository,  IdUsuarioAutenticado);
+                bool existeCliente = existeColaboradorComIdUsuario.Execute();
+                if(!existeCliente)
+                {
+                    return RedirectToAction("Create","Colaborador");
+                }
+                
                 ColaboradorEntity input = ViewModelToEntity.MapColaborador(viewModel);
     
                 AtualizarColaboradorUseCase useCase = new AtualizarColaboradorUseCase(_colaboradorRepository, input);
