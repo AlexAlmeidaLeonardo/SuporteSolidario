@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using SuporteSolidarioBusiness.Application.Repositories;
 using SuporteSolidarioBusiness.Application.Services;
@@ -39,6 +40,11 @@ builder.Services.AddSingleton<IGeoLocalizacaoService, GeoLocalizacaoGoogleServic
 
 
 var app = builder.Build();
+
+var cultureInfo = new CultureInfo("pt-BR");
+cultureInfo.NumberFormat.CurrencySymbol = "R$";
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

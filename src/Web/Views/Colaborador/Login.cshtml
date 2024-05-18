@@ -2,12 +2,16 @@
 @model LoginViewModel
 
 @{
-    ViewData["Title"] = "Login do Colaborador";
-    string? loginInvalido = (string?)ViewData["LoginInvalido"];
-    ViewData["LoginInvalido"] = "";
+    bool hasError = false;
+    if(!String.IsNullOrEmpty(Model.MENSAGEM_ERRO))
+    {
+        hasError = true;
+    }
 }
-<h2>@ViewData["Title"]</h2>
+
+<h2>@Model.TITULO_PAGINA</h2>
 <hr />
+
 <div class="container">
     <div class="row justify-content-center mt-5">
         <div class="col-md-5 mt-5">
@@ -40,3 +44,10 @@
         </div>
     </div>
 </div>
+
+@if(hasError)
+{
+    <br/>
+    <br/>
+    <center><strong class="text-danger">@Model.MENSAGEM_ERRO</strong></center>
+}

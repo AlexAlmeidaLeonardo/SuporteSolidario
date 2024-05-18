@@ -1,0 +1,38 @@
+@using SuporteSolidario.ViewModel
+@model SuporteSolidario.ViewModel.SolicitacaoServicoViewModel
+
+@{
+    bool hasError = false;
+    if(!String.IsNullOrEmpty(Model.MENSAGEM_ERRO))
+    {
+        hasError = true;
+    }
+}
+
+<h2>@Model.TITULO_PAGINA</h2>
+<hr />
+<form asp-action="SolicitacaoServicoPost">
+    <center>
+        <div class="row justify-content-center mt-5">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="col-md-4 form-group">
+                <select asp-for="IdServico" 
+                        asp-items="@(new SelectList(Model.Servicos, nameof(ServicoViewModel.Id), nameof(ServicoViewModel.Descricao)))">
+                </select>
+
+                <div class="form-group d-flex justify-content-between mt-5">
+                    <a href="@Url.Action("SolicitacaoCategoria", "Cliente")" class="btn btn-secondary">Voltar</a>
+                    <input type="submit" value="Avançar" class="btn btn-primary" />
+                </div>
+            </div>
+            
+        </div>
+    </center>
+</form>
+
+@if(hasError)
+{
+    <br/>
+    <br/>
+    <center><strong class="text-danger">@Model.MENSAGEM_ERRO</strong></center>
+}

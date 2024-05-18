@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SuporteSolidario.ViewModel;
 
-public class LoginViewModel
+public class LoginViewModel: BaseViewModel
 {
     [Required(AllowEmptyStrings = false, ErrorMessage = "Insira o seu usuário")]
     [Display(Name = "Usuário")]

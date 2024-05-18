@@ -1,7 +1,9 @@
+namespace SuporteSolidario.ViewModel;
+
 using System.ComponentModel.DataAnnotations;
 using SuporteSolidarioBusiness.Domain.Enums;
 
-public class SignUpViewModel
+public class SignUpViewModel: BaseViewModel
 {
     [Required(AllowEmptyStrings = false, ErrorMessage = "Insira o seu usuário")]
     [Display(Name = "Usuário")]

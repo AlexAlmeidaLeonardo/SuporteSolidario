@@ -10,6 +10,7 @@ using SuporteSolidarioBusiness.Application.Services;
 using SuporteSolidarioBusiness.Application.UseCases;
 using SuporteSolidarioBusiness.Domain.Entities;
 using SuporteSolidarioBusiness.Domain.Enums;
+using SuporteSolidarioBusiness.Infrastructure.MySQL;
 
 namespace SuporteSolidario.Controllers
 {
@@ -19,16 +20,20 @@ namespace SuporteSolidario.Controllers
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly IClienteRepository _clienteRepository;
         private readonly ISolicitacaoRepository _solicitacaoRepository;
+        private readonly IServicoRepository _servicoRepository;
+        private readonly ICategoriaRepository _categoriaRepository;
         private readonly ITokenService _tokenService;
         private readonly IGeoLocalizacaoService _geoLocalizacaoService;
         private readonly IAuthRepository _repo;
 
-        public ClienteController(ICryptoService cryptoService, IUsuarioRepository usuarioRepository, IClienteRepository clienteRepository, ISolicitacaoRepository solicitacaoRepository, ITokenService tokenService, IAuthRepository repo, IGeoLocalizacaoService geoLocalizacaoService)
+        public ClienteController(ICryptoService cryptoService, IUsuarioRepository usuarioRepository, IClienteRepository clienteRepository, ISolicitacaoRepository solicitacaoRepository, IServicoRepository servicoRepository, ICategoriaRepository categoriaRepository, ITokenService tokenService, IAuthRepository repo, IGeoLocalizacaoService geoLocalizacaoService)
         {
             _cryptoService = cryptoService;
             _usuarioRepository = usuarioRepository;
             _clienteRepository = clienteRepository;
             _solicitacaoRepository = solicitacaoRepository;
+            _servicoRepository = servicoRepository;
+            _categoriaRepository = categoriaRepository;
             _tokenService = tokenService;
             _geoLocalizacaoService = geoLocalizacaoService;
             _repo = repo;
@@ -55,49 +60,32 @@ namespace SuporteSolidario.Controllers
                 return RedirectToAction("Create","Cliente");
             }
 
-            return View();
+            IndexClienteViewModel viewModel = new IndexClienteViewModel();
+            viewModel.TITULO_PAGINA = "Painel do Cliente";
+
+            return View(viewModel);
         }
 
         [HttpGet]
         public ActionResult SignUp()
         {
-            if (!HttpContext.User.Identity.IsAuthenticated)
-            {
-                HttpContext.SignOutAsync();
-                return RedirectToAction("Login","Cliente");
-            }
-
-            if (TipoUsuarioAutenticado != TipoUsuario.Cliente)
-            {
-                return RedirectToAction("Index","Home");
-            }
-
-            return View();
+            SignUpViewModel viewModel = new SignUpViewModel();
+            viewModel.TITULO_PAGINA = "Inscrição do Cliente";
+            return View(viewModel);
         }
 
         [HttpPost]
-        public ActionResult SignUp(SignUpViewModel vmSignUp)
-        {
-            if (!HttpContext.User.Identity.IsAuthenticated)
-            {
-                HttpContext.SignOutAsync();
-                return RedirectToAction("Login","Cliente");
-            }
-
-            if (TipoUsuarioAutenticado != TipoUsuario.Cliente)
-            {
-                return RedirectToAction("Index","Home");
-            }
-            
-            if(vmSignUp == null)
+        public ActionResult SignUp(SignUpViewModel viewModel)
+        {            
+            if(viewModel == null)
                 return View();
 
             UsuarioEntity usuario = new UsuarioEntity();
-            usuario.Login = vmSignUp.Login;
-            usuario.Password1 = vmSignUp.Password;
-            usuario.Password2 = vmSignUp.Password2;
-            usuario.Email = vmSignUp.Email;
-            usuario.Celular = vmSignUp.Celular;
+            usuario.Login = viewModel.Login;
+            usuario.Password1 = viewModel.Password;
+            usuario.Password2 = viewModel.Password2;
+            usuario.Email = viewModel.Email;
+            usuario.Celular = viewModel.Celular;
             usuario.TipoDeUsuario = TipoUsuario.Cliente;
 
             try
@@ -109,8 +97,12 @@ namespace SuporteSolidario.Controllers
             }
             catch(Exception e)
             {
-                ViewData["MensagemErro"] = e.Message;
-                return View();
+                viewModel = new SignUpViewModel
+                {
+                    TITULO_PAGINA = "Inscrição do Cliente",
+                    MENSAGEM_ERRO = e.Message
+                };
+                return View(viewModel);
             }
         }
 
@@ -122,20 +114,23 @@ namespace SuporteSolidario.Controllers
                 HttpContext.SignOutAsync();
                 return RedirectToAction("Login","Cliente");
             }
-            
-            return View();
+
+            LoginViewModel viewModel = new LoginViewModel();
+            viewModel.TITULO_PAGINA = "Login do Cliente";
+
+            return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Login(LoginViewModel vmLogin)
+        public ActionResult Login(LoginViewModel viewModel)
         {
             try
             {
                 LoginDTO dto = new LoginDTO
                 {
-                    Login = vmLogin.Login,
-                    Password1 = vmLogin.Password
+                    Login = viewModel.Login,
+                    Password1 = viewModel.Password
                 };
 
                 EfetuarLoginUseCase useCase = new EfetuarLoginUseCase(_cryptoService, _tokenService, _repo, dto, TipoUsuario.Cliente);
@@ -144,7 +139,7 @@ namespace SuporteSolidario.Controllers
                 var authProperties = new AuthenticationProperties
                 {
                     RedirectUri = "/Cliente/Index",
-                    ExpiresUtc = vmLogin.RememberMe ? DateTime.UtcNow.AddYears(2) : DateTime.UtcNow.AddHours(1),
+                    ExpiresUtc = viewModel.RememberMe ? DateTime.UtcNow.AddYears(2) : DateTime.UtcNow.AddHours(1),
                     IsPersistent = true
                 };
 
@@ -159,8 +154,12 @@ namespace SuporteSolidario.Controllers
             }
             catch(Exception e)
             {
-                ViewData["LoginInvalido"] = e.Message;
-                return View();
+                viewModel = new LoginViewModel
+                {
+                    TITULO_PAGINA = "Login do Cliente",
+                    MENSAGEM_ERRO = e.Message
+                };
+                return View(viewModel);
             }
         }
 
@@ -180,6 +179,7 @@ namespace SuporteSolidario.Controllers
         [HttpGet]
         public ActionResult Create()
         {
+            ClienteViewModel viewModel = new ClienteViewModel();
             try
             {
                 if (TipoUsuarioAutenticado != TipoUsuario.Cliente)
@@ -187,18 +187,15 @@ namespace SuporteSolidario.Controllers
                     return RedirectToAction("Index","Home");
                 }
 
-                ViewData["FormAction"] = "Create";
-
-                ClienteViewModel viewModel = new ClienteViewModel();
                 viewModel.IdUsuario = IdUsuarioAutenticado;
-    
-                return View(viewModel);
+                viewModel.FORM_ACTION = "Create";
+                viewModel.TITULO_PAGINA = "Cadastro de Cliente";
             }
             catch (Exception e)
             {                
-                ViewData["MensagemErro"] = e.Message;
-                return View();
+                viewModel.MENSAGEM_ERRO = e.Message;
             }
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -222,6 +219,7 @@ namespace SuporteSolidario.Controllers
             }
             catch(Exception e)
             {
+                viewModel.MENSAGEM_ERRO = e.Message;
                 return View(viewModel);
             }
         }
@@ -243,18 +241,18 @@ namespace SuporteSolidario.Controllers
                     return RedirectToAction("Create","Cliente");
                 }
 
-                ViewData["FormAction"] = "Edit";
-                
                 BuscarClienteUseCase useCase = new BuscarClienteUseCase(_clienteRepository, IdUsuarioAutenticado);
                 ClienteEntity entity = useCase.Execute();
                 ClienteViewModel viewModel = EntityToViewModel.MapCliente(entity);
+                viewModel.FORM_ACTION = "Edit";
     
                 return View(viewModel);
             }
             catch (Exception e)
-            {                
-                ViewData["MensagemErro"] = e.Message;
-                return View();
+            {
+                ClienteViewModel viewModel = new ClienteViewModel();
+                viewModel.MENSAGEM_ERRO = e.Message;
+                return View(viewModel);
             }
         }
 
@@ -285,11 +283,153 @@ namespace SuporteSolidario.Controllers
             }
             catch (Exception e)
             {
-                ViewData["MensagemErro"] = e.Message;
-                return View();
+                viewModel.MENSAGEM_ERRO = e.Message;
+                return View(viewModel);
             }            
         }
     
+        [HttpGet]
+        public ActionResult SolicitacaoCategoria()
+        {
+            BuscarTodasCategoriaUseCase buscarTodasCategoria = new BuscarTodasCategoriaUseCase(_categoriaRepository);
+            IEnumerable<CategoriaEntity> lst = buscarTodasCategoria.Execute();
+            /*
+            lst.Add(new CategoriaModel{ Id = 1, Descricao = "Jardinagem" });
+            lst.Add(new CategoriaModel{ Id = 2, Descricao = "Reforma" });
+            lst.Add(new CategoriaModel{ Id = 3, Descricao = "Alimentação" });
+            lst.Add(new CategoriaModel{ Id = 4, Descricao = "Enfermagem" });
+            lst.Add(new CategoriaModel{ Id = 5, Descricao = "Entregas" });
+            lst.Add(new CategoriaModel{ Id = 6, Descricao = "Manutenção" });
+            */
+
+            SolicitacaoCategoriaViewModel viewModel = new SolicitacaoCategoriaViewModel( lst );
+            viewModel.TITULO_PAGINA = "Qual categoria de serviço você precisa?";
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult SolicitacaoCategoria(long IdCategoria)
+        {
+            if(IdCategoria > 0)
+                return RedirectToAction("SolicitacaoServico", new { IdCategoria });
+
+            SolicitacaoCategoriaViewModel viewModel = new SolicitacaoCategoriaViewModel(new List<CategoriaEntity>());
+            viewModel.TITULO_PAGINA = "Categoria selecionada: " + IdCategoria;
+            return View(viewModel);
+        }
+
+        [HttpGet]
+        public ActionResult SolicitacaoServico(long idCategoria)
+        {
+            BuscarServicosPorCategoriaUseCase buscarServicosPorCategoria = new BuscarServicosPorCategoriaUseCase(_servicoRepository, idCategoria);
+            IEnumerable<ServicoEntity> lst = buscarServicosPorCategoria.Execute();
+            /*
+            lst.Add(new ServicoModel{ Id = 1, IdCategoria = idCategoria, Descricao = "Regar as rosas" });
+            lst.Add(new ServicoModel{ Id = 2, IdCategoria = idCategoria, Descricao = "Regar as margaridas" });
+            lst.Add(new ServicoModel{ Id = 3, IdCategoria = idCategoria, Descricao = "Regar as tulipas" });
+            lst.Add(new ServicoModel{ Id = 4, IdCategoria = idCategoria, Descricao = "Regar as orquideas" });
+            lst.Add(new ServicoModel{ Id = 5, IdCategoria = idCategoria, Descricao = "Regar os girassois" });
+            lst.Add(new ServicoModel{ Id = 6, IdCategoria = idCategoria, Descricao = "Regar as papoulas" });
+            */
+
+            SolicitacaoServicoViewModel viewModel = new SolicitacaoServicoViewModel( lst );
+            viewModel.TITULO_PAGINA = "Qual tipo de serviço você precisa?";
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult SolicitacaoServicoPost(long IdServico)
+        {
+            if(IdServico > 0)
+                return RedirectToAction("Solicitacao", new { IdServico });
+
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult Solicitacao(long IdServico)
+        {
+            BuscarServicoUseCase buscarServico = new BuscarServicoUseCase(_servicoRepository, IdServico);
+            ServicoEntity servico = buscarServico.Execute();
+    
+            BuscarCategoriaUseCase buscarCategoria = new BuscarCategoriaUseCase(_categoriaRepository, servico.IdCategoria);
+            CategoriaEntity categoria = buscarCategoria.Execute();
+
+            SolicitacaoViewModel viewModel = new SolicitacaoViewModel();
+            viewModel.IdServico = IdServico;
+            viewModel.DescricaoCategoria = categoria.Descricao;
+            viewModel.DescricaoServico = servico.Descricao;
+            viewModel.TITULO_PAGINA = "Explique melhor que serviço você deseja";
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult Solicitacao(SolicitacaoViewModel viewModel)
+        {
+            BuscarClienteByUsuarioUseCase buscarClienteByUsuario = new BuscarClienteByUsuarioUseCase(_clienteRepository, IdUsuarioAutenticado);
+            ClienteEntity cliente = buscarClienteByUsuario.Execute();
+
+            if(cliente == null)
+            {
+                return RedirectToAction("Index","Cliente");
+            }
+
+            SolicitacaoEntity solicitacaoEntity = new SolicitacaoEntity
+            {
+                IdServico = viewModel.IdServico,
+                IdCliente = cliente.Id,
+                DataServico = viewModel.DataServico,
+                Detalhes = viewModel.Detalhes
+            };
+
+            AdicionarSolicitacaoUseCase adicionarSolicitacao = new AdicionarSolicitacaoUseCase(_solicitacaoRepository, _clienteRepository, solicitacaoEntity);
+            SolicitacaoEntity retorno = adicionarSolicitacao.Execute();
+
+            if( retorno == null )
+            {
+                viewModel.MENSAGEM_ERRO = "Não foi possível criar a solicitação. Tente novamente mais tarde.";
+                return View(viewModel);
+            }
+
+            long IdSolicitacao = retorno.Id;
+
+            return RedirectToAction("SolicitacaoConcluida", new { IdSolicitacao });
+        }
+
+        [HttpGet]
+        public ActionResult SolicitacaoConcluida(long IdSolicitacao)
+        {
+            try
+            {
+                BuscarSolicitacaoUseCase buscarSolicitacao = new BuscarSolicitacaoUseCase(_solicitacaoRepository, IdSolicitacao);
+                SolicitacaoEntity solicitacao = buscarSolicitacao.Execute();
+    
+                BuscarServicoUseCase buscarServico = new BuscarServicoUseCase(_servicoRepository, solicitacao.IdServico);
+                ServicoEntity servico = buscarServico.Execute();
+    
+                BuscarCategoriaUseCase buscarCategoria = new BuscarCategoriaUseCase(_categoriaRepository, servico.IdCategoria);
+                CategoriaEntity categoria = buscarCategoria.Execute();
+    
+                SolicitacaoConcluidaViewModel viewModel = new SolicitacaoConcluidaViewModel();
+                viewModel.IdSolicitacao = solicitacao.Id;
+                viewModel.DescricaoCategoria = categoria.Descricao;
+                viewModel.DescricaoServico = servico.Descricao;
+                viewModel.DataServico = solicitacao.DataServico;
+                viewModel.Data = solicitacao.Data;
+                viewModel.TITULO_PAGINA = "Solicitação Concluída!";
+    
+                return View(viewModel);
+            }
+            catch (Exception e)
+            {
+                SolicitacaoConcluidaViewModel viewModel = new SolicitacaoConcluidaViewModel();
+                viewModel.TITULO_PAGINA = "Não foi possível concluir a solicitação.";
+                viewModel.MENSAGEM_ERRO = e.Message;    
+                return View(viewModel);
+            }
+        }
+
         [HttpGet]
         public ActionResult Solicitacoes()
         {
@@ -316,8 +456,9 @@ namespace SuporteSolidario.Controllers
             }
             catch(Exception e)
             {
-                ViewData["MensagemErro"] = e.Message;
-                return View();
+                SolicitacoesViewModel solicitacoes = new SolicitacoesViewModel(null);
+                solicitacoes.MENSAGEM_ERRO = e.Message;
+                return View(solicitacoes);
             }
         }
     

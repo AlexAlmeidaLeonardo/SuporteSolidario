@@ -1,13 +1,33 @@
-public class SolicitacaoViewModel
+using System.ComponentModel.DataAnnotations;
+
+namespace SuporteSolidario.ViewModel;
+
+public class SolicitacaoViewModel: BaseViewModel
 {
 
-    public SolicitacaoViewModel(SolicitacaoModel item)
+    public SolicitacaoViewModel()
     {
-        this.Data = item.Data;
-        this.DataServico = item.DataServico;
-        this.Detalhes = item.Detalhes;
     }
 
+    public SolicitacaoViewModel(SolicitacaoModel model)
+    {
+        this.IdCliente = model.IdCliente;
+        this.IdServico = model.IdServico;
+        this.Data = model.Data;
+        this.DataServico = model.DataServico;
+        this.Detalhes = model.Detalhes;
+    }
+
+    public long IdCliente { get; set; }
+
+    public long IdServico { get; set; }
+
+    public string DescricaoCategoria { get; set; }
+
+    public string DescricaoServico { get; set; }
+
+    [DataType(DataType.Date)]
+    [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
     public DateTime Data { get; set; }
 
     public DateTime DataServico { get; set; }

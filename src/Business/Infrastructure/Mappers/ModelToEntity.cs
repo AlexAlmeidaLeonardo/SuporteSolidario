@@ -80,6 +80,7 @@ public static class ModelToEntity
         ServicoEntity entity = new ServicoEntity
         {
             Id = model.Id,
+            IdCategoria = model.IdCategoria,
             Descricao = model.Descricao
         };
 
@@ -99,10 +100,10 @@ public static class ModelToEntity
 
     internal static IEnumerable<ServicoEntity> MapListServico(IEnumerable<ServicoModel> lst)
     {
-        IEnumerable<ServicoEntity> lstEntity = new List<ServicoEntity>();
+        List<ServicoEntity> lstEntity = new List<ServicoEntity>();
         foreach(ServicoModel item in lst)
         {
-            lstEntity.Append(MapServico(item));
+            lstEntity.Add(MapServico(item));
         }
 
         return lstEntity;
@@ -110,10 +111,10 @@ public static class ModelToEntity
 
     internal static IEnumerable<CategoriaEntity> MapListTipoServico(IEnumerable<CategoriaModel> lstModel)
     {
-        IEnumerable<CategoriaEntity> lstEntity = new List<CategoriaEntity>();
+        List<CategoriaEntity> lstEntity = new List<CategoriaEntity>();
         foreach(CategoriaModel item in lstModel)
         {
-            lstEntity.Append(MapCategoria(item));
+            lstEntity.Add(MapCategoria(item));
         }
 
         return lstEntity;
@@ -186,7 +187,7 @@ public static class ModelToEntity
 
         foreach(ColaboradorModel item in lstModel)
         {
-            lstEntity.Append(MapColaborador(item));
+            lstEntity = lstEntity.Append(MapColaborador(item));
         }
 
         return lstEntity;

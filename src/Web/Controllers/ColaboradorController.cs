@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using System.Security.Policy;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -53,48 +52,33 @@ namespace SuporteSolidario.Controllers
                 return RedirectToAction("Create","Colaborador");
             }
 
+            IndexClienteViewModel viewModel = new IndexClienteViewModel();
+            viewModel.TITULO_PAGINA = "Painel do Colaborador";
+
             return View();
         }
 
         [HttpGet]
         public ActionResult SignUp()
         {
-            if (!HttpContext.User.Identity.IsAuthenticated)
-            {
-                HttpContext.SignOutAsync();
-                return RedirectToAction("Login","Colaborador");
-            }
-
-            if (TipoUsuarioAutenticado != TipoUsuario.Colaborador)
-            {
-                return RedirectToAction("Index","Home");
-            }
-            return View();
+            SignUpViewModel viewModel = new SignUpViewModel();
+            viewModel.TITULO_PAGINA = "Inscrição do Colaborador";
+            return View(viewModel);
         }
 
         [HttpPost]
-        public ActionResult SignUp(SignUpViewModel vmSignUp)
+        public ActionResult SignUp(SignUpViewModel viewModel)
         {
-            if (!HttpContext.User.Identity.IsAuthenticated)
-            {
-                HttpContext.SignOutAsync();
-                return RedirectToAction("Login","Colaborador");
-            }
-
-            if (TipoUsuarioAutenticado != TipoUsuario.Colaborador)
-            {
-                return RedirectToAction("Index","Home");
-            }
             
-            if(vmSignUp == null)
+            if(viewModel == null)
                 return View();
 
             UsuarioEntity usuario = new UsuarioEntity();
-            usuario.Login = vmSignUp.Login;
-            usuario.Password1 = vmSignUp.Password;
-            usuario.Password2 = vmSignUp.Password2;
-            usuario.Email = vmSignUp.Email;
-            usuario.Celular = vmSignUp.Celular;
+            usuario.Login = viewModel.Login;
+            usuario.Password1 = viewModel.Password;
+            usuario.Password2 = viewModel.Password2;
+            usuario.Email = viewModel.Email;
+            usuario.Celular = viewModel.Celular;
             usuario.TipoDeUsuario = TipoUsuario.Colaborador;
 
             try
@@ -106,8 +90,8 @@ namespace SuporteSolidario.Controllers
             }
             catch(Exception e)
             {
-                ViewData["MensagemErro"] = e.Message;
-                return View();
+                viewModel.MENSAGEM_ERRO = e.Message;
+                return View(viewModel);
             }
         }
 
@@ -120,19 +104,22 @@ namespace SuporteSolidario.Controllers
                 return RedirectToAction("Login","Colaborador");
             }
             
-            return View();
+            LoginViewModel viewModel = new LoginViewModel();
+            viewModel.TITULO_PAGINA = "Login do Colaborador";
+
+            return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Login(LoginViewModel vmLogin)
+        public ActionResult Login(LoginViewModel viewModel)
         {
             try
             {
                 LoginDTO dto = new LoginDTO
                 {
-                    Login = vmLogin.Login,
-                    Password1 = vmLogin.Password
+                    Login = viewModel.Login,
+                    Password1 = viewModel.Password
                 };
 
                 EfetuarLoginUseCase useCase = new EfetuarLoginUseCase(_cryptoService, _tokenService, _repo, dto, TipoUsuario.Colaborador);
@@ -141,7 +128,7 @@ namespace SuporteSolidario.Controllers
                 var authProperties = new AuthenticationProperties
                 {
                     RedirectUri = "/Colaborador/Index",
-                    ExpiresUtc = vmLogin.RememberMe ? DateTime.UtcNow.AddYears(2) : DateTime.UtcNow.AddHours(1),
+                    ExpiresUtc = viewModel.RememberMe ? DateTime.UtcNow.AddYears(2) : DateTime.UtcNow.AddHours(1),
                     IsPersistent = true
                 };
 
@@ -156,8 +143,12 @@ namespace SuporteSolidario.Controllers
             }
             catch(Exception e)
             {
-                ViewData["LoginInvalido"] = e.Message;
-                return View();
+                viewModel = new LoginViewModel
+                {
+                    TITULO_PAGINA = "Login do Colaborador",
+                    MENSAGEM_ERRO = e.Message
+                };
+                return View(viewModel);
             }
         }
 
@@ -183,18 +174,23 @@ namespace SuporteSolidario.Controllers
                 {
                     return RedirectToAction("Index","Home");
                 }
-                
-                ViewData["FormAction"] = "Create";
 
-                ColaboradorViewModel viewModel = new ColaboradorViewModel();
-                viewModel.IdUsuario = IdUsuarioAutenticado;
-    
+                ColaboradorViewModel viewModel = new ColaboradorViewModel
+                {
+                    IdUsuario = IdUsuarioAutenticado,
+                    FORM_ACTION = "Create",
+                    TITULO_PAGINA = "Cadastro de Colaborador"
+                };
+
                 return View(viewModel);
             }
             catch (Exception e)
-            {                
-                ViewData["MensagemErro"] = e.Message;
-                return View();
+            {
+                ColaboradorViewModel viewModel = new ColaboradorViewModel
+                {
+                    MENSAGEM_ERRO = e.Message
+                };
+                return View(viewModel);
             }
         }
 
@@ -219,6 +215,7 @@ namespace SuporteSolidario.Controllers
             }
             catch(Exception e)
             {
+                viewModel.MENSAGEM_ERRO = e.Message;
                 return View(viewModel);
             }
         }
@@ -239,19 +236,19 @@ namespace SuporteSolidario.Controllers
                 {
                     return RedirectToAction("Create","Colaborador");
                 }
-
-                ViewData["FormAction"] = "Edit";
     
                 BuscarColaboradorByUsuarioUseCase useCase = new BuscarColaboradorByUsuarioUseCase(_colaboradorRepository, IdUsuarioAutenticado);
                 ColaboradorEntity entity = useCase.Execute();
                 ColaboradorViewModel viewModel = EntityToViewModel.MapColaborador(entity);
+                viewModel.FORM_ACTION = "Edit";
     
                 return View(viewModel);
             }
             catch (Exception e)
             {                
-                ViewData["MensagemErro"] = e.Message;
-                return View();
+                ColaboradorViewModel viewModel = new ColaboradorViewModel();
+                viewModel.MENSAGEM_ERRO = e.Message;
+                return View(viewModel);
             }
         }
 
@@ -282,8 +279,8 @@ namespace SuporteSolidario.Controllers
             }
             catch (Exception e)
             {
-                ViewData["MensagemErro"] = e.Message;
-                return View();
+                viewModel.MENSAGEM_ERRO = e.Message;
+                return View(viewModel);
             }            
         }
     }

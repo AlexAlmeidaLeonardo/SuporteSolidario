@@ -4,6 +4,8 @@ namespace SuporteSolidario.ViewModel;
 
 public class PessoaViewModel: BaseViewModel
 {
+    
+    public long Id { get; set; }
     public long IdUsuario { get; set; }
 
     [Required(AllowEmptyStrings = false, ErrorMessage = "Insira o seu nome")]
@@ -67,5 +69,7 @@ public class PessoaViewModel: BaseViewModel
     [Required(AllowEmptyStrings = false, ErrorMessage = "Insira o seu Email")]
     [Display(Name = "Email")]
     public string Email { get; set; }
+
+    public string FORM_ACTION { get; set; }
     
 }

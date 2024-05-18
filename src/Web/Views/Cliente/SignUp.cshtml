@@ -1,11 +1,14 @@
-@using SuporteSolidarioBusiness.Domain.Enums
-@model SignUpViewModel
+@model SuporteSolidario.ViewModel.SignUpViewModel
 
 @{
-    ViewData["Title"] = "Inscrição do Cliente";
+    bool hasError = false;
+    if(!String.IsNullOrEmpty(Model.MENSAGEM_ERRO))
+    {
+        hasError = true;
+    }
 }
 
-<h2>@ViewData["Title"]</h2>
+<h2>@Model.TITULO_PAGINA</h2>
 <hr />
 
 <div class="container">
@@ -53,3 +56,10 @@
         </div>
     </div>
 </div>
+
+@if(hasError)
+{
+    <br/>
+    <br/>
+    <center><strong class="text-danger">@Model.MENSAGEM_ERRO</strong></center>
+}

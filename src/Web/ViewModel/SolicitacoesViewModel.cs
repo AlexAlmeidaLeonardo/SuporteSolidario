@@ -1,4 +1,6 @@
-public class SolicitacoesViewModel
+namespace SuporteSolidario.ViewModel;
+
+public class SolicitacoesViewModel: BaseViewModel
 {
     private readonly IEnumerable<SolicitacaoViewModel> _solicitacoes;
 

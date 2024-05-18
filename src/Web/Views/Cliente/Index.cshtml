@@ -1,9 +1,8 @@
 @{
-    ViewData["Title"] = "Painel do Cliente";
     bool modoDev = true;
 }
 
-<h1>@ViewData["Title"]</h1>
+<h2>@Model.TITULO_PAGINA</h2>
 
 @if(modoDev)
 {
@@ -11,22 +10,22 @@
         <a href="@Url.Action("Edit", "Cliente")" class="btn btn-primary btn-block mt-3">Conta</a>
     </div>
     <div class="row">
-        <a href="#" class="btn btn-primary btn-block mt-3">Pedidos</a>
+        <a href="@Url.Action("SolicitacaoCategoria", "Cliente")" class="btn btn-primary btn-block mt-3">Solicitar Serviço</a>
     </div>
     <div class="row">
-        <a href="#" class="btn btn-primary btn-block mt-3">Histórico</a>
+        <a href="#" class="btn btn-secondary btn-block mt-3">Pedidos</a>
     </div>
     <div class="row">
-        <a href="#" class="btn btn-primary btn-block mt-3">Logout</a>
+        <a href="#" class="btn btn-secondary btn-block mt-3">Histórico</a>
     </div>
     <div class="row">
-        <a href="#" class="btn btn-primary btn-block mt-3">Solicitar Serviço</a>
+        <a href="#" class="btn btn-secondary btn-block mt-3">Gerenciar Solicitações</a>
     </div>
     <div class="row">
-        <a href="#" class="btn btn-primary btn-block mt-3">Gerenciar Solicitações</a>
+        <a href="#" class="btn btn-secondary btn-block mt-3">Favoritos</a>
     </div>
     <div class="row">
-        <a href="#" class="btn btn-primary btn-block mt-3">Favoritos</a>
+        <a href="@Url.Action("Logout", "Cliente")" class="btn btn-primary btn-block mt-3">Logout</a>
     </div>
 }
 else
@@ -36,5 +35,3 @@ else
         <img src="~/img/rascunhos/perfil_cliente.jpeg" width="100px" height="550px" />
     </div>
 }
-
-

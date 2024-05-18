@@ -60,4 +60,20 @@ public class ServicoMySqlRepository : IServicoRepository
 
         return entity;
     }
+
+    public IEnumerable<ServicoEntity> LerTodosPorCategoria(long idCategoria)
+    {
+        IEnumerable<ServicoModel> lstModel = _context.Servicos
+                                                     .Where(x => x.IdCategoria == idCategoria)
+                                                     .ToList();
+
+        if(lstModel is null)
+        {
+            return null;
+        }
+
+        IEnumerable<ServicoEntity> lstDto = ModelToEntity.MapListServico(lstModel);
+
+        return lstDto;
+    }
 }
