@@ -14,3 +14,56 @@ Para a criação de views:
 dotnet aspnet-codegenerator view Index Empty --relativeFolderPath Views/Informacoes --useDefaultLayout
 
 
+Pontos pendentes:
+
+* GERAL
+  |
+  +-- Remodelar a tela inicial
+  |
+  +-- Informações do serviço
+  |
+  +-- Politica de privacidade
+  |
+  +-- Quem somos & contato
+  |
+  +-- Opção de lembrar a senha nos logins -- REMOVIDO
+  |
+  +-- Fazer a descrição da tela aparecer na aba do navegador
+
+* CLIENTE
+  |
+  +-- Painel do Cliente
+  |
+  +-- Chat com o colaborador
+  |
+  +-- Adicionar a foto do cliente
+  |   |
+  |   +-- Tratar mensagens de erro no momento do cadastro
+
+* COLABORADOR
+  |
+  +-- Painel do Colaborador
+  |   |
+  |   +-- Tratar mensagens de erro no momento do cadastro
+  |   |
+  |   +-- Cadastro do serviços prestados pelo colaborador
+  |   |
+  |   +-- Lista de solicitações em aberto
+  |   |
+  |   +-- Lista de solicitações em andamento
+  |   |
+  |   +-- Lista de solicitações em finalizadas
+  
+  |
+  +-- Chat com o cliente
+  |
+  +-- Adicionar a foto do colaborador
+
+* SOLICITACAO DE SERVIÇOS
+  |
+  +-- Layout da seleção de categorias
+  |
+  +-- Layout da seleção de serviços
+  |
+  +-- Layout da tela de solicitação de serviço (layout, formato da data, etc)
+* 

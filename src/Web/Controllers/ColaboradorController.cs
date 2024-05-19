@@ -55,7 +55,7 @@ namespace SuporteSolidario.Controllers
             IndexClienteViewModel viewModel = new IndexClienteViewModel();
             viewModel.TITULO_PAGINA = "Painel do Colaborador";
 
-            return View();
+            return View(viewModel);
         }
 
         [HttpGet]
@@ -240,7 +240,8 @@ namespace SuporteSolidario.Controllers
                 BuscarColaboradorByUsuarioUseCase useCase = new BuscarColaboradorByUsuarioUseCase(_colaboradorRepository, IdUsuarioAutenticado);
                 ColaboradorEntity entity = useCase.Execute();
                 ColaboradorViewModel viewModel = EntityToViewModel.MapColaborador(entity);
-                viewModel.FORM_ACTION = "Edit";
+                viewModel.TITULO_PAGINA = "Dados do colaborador";
+                viewModel.FORM_ACTION = "Edit";                
     
                 return View(viewModel);
             }
@@ -279,6 +280,7 @@ namespace SuporteSolidario.Controllers
             }
             catch (Exception e)
             {
+                viewModel.TITULO_PAGINA = "Dados do colaborador";
                 viewModel.MENSAGEM_ERRO = e.Message;
                 return View(viewModel);
             }            

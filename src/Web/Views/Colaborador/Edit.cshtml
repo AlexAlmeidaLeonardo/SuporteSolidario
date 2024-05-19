@@ -1,10 +1,14 @@
 @model SuporteSolidario.ViewModel.ColaboradorViewModel
 
 @{
-    ViewData["Title"] = "Edição";
+    bool hasError = false;
+    if(!String.IsNullOrEmpty(Model.MENSAGEM_ERRO))
+    {
+        hasError = true;
+    }
 }
 
-<h1>@ViewData["Title"]</h1>
+<h2>@Model.TITULO_PAGINA</h2>
 <hr />
 <form asp-action="Edit">
     @Html.HiddenFor(m => m.Id)
@@ -108,3 +112,10 @@
 
     </div>
 </form>
+
+@if(hasError)
+{
+    <br/>
+    <br/>
+    <center><strong class="text-danger">@Model.MENSAGEM_ERRO</strong></center>
+}
