@@ -93,4 +93,42 @@ public class SolicitacaoRepository : ISolicitacaoRepository
                                                     .ToList();
         return lst;
     }
+
+    public IEnumerable<SolicitacaoEmAbertoDTO> GetSolicitacoesEmAberto(long idCliente)
+    {
+        
+        IEnumerable<SolicitacaoEmAbertoDTO> lst = _context.Solicitacoes
+                                                    .Join(
+                                                        _context.Servicos,
+                                                        solicitacao => solicitacao.IdServico,
+                                                        servico => servico.Id,
+                                                        (solicitacao, servico) => new 
+                                                        {
+                                                            Id = solicitacao.Id,
+                                                            IdCliente = solicitacao.IdCliente,
+                                                            IdServico = servico.Id,
+                                                            DescricaoCategoria = servico.Categoria.Descricao,                                                            
+                                                            DescricaoServico = servico.Descricao,
+                                                            Data = solicitacao.Data,
+                                                            DataServico = solicitacao.DataServico,
+                                                            Detalhes = solicitacao.Detalhes,
+                                                            EmAberto = solicitacao.EmAberto
+                                                        })
+                                                    .Where( x => x.IdCliente == idCliente && x.EmAberto == true)
+                                                    .OrderBy(o => o.Data)
+                                                    .Select(x => new SolicitacaoEmAbertoDTO()
+                                                    {
+                                                        Id = x.Id,
+                                                        IdCliente = x.IdCliente,
+                                                        IdServico = x.IdServico,
+                                                        DescricaoCategoria = x.DescricaoCategoria,
+                                                        DescricaoServico = x.DescricaoServico,
+                                                        Data = x.Data,
+                                                        DataServico = x.DataServico,
+                                                        Detalhes = x.Detalhes
+                                                    })
+                                                    .ToList();
+
+        return lst;
+    }
 }

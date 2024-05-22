@@ -241,7 +241,7 @@ namespace SuporteSolidario.Controllers
                 ColaboradorEntity entity = useCase.Execute();
                 ColaboradorViewModel viewModel = EntityToViewModel.MapColaborador(entity);
                 viewModel.TITULO_PAGINA = "Dados do colaborador";
-                viewModel.FORM_ACTION = "Edit";                
+                viewModel.FORM_ACTION = "Edit";
     
                 return View(viewModel);
             }

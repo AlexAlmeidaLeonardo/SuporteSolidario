@@ -2,18 +2,18 @@ namespace SuporteSolidario.ViewModel;
 
 public class SolicitacoesViewModel: BaseViewModel
 {
-    private readonly IEnumerable<SolicitacaoViewModel> _solicitacoes;
+    private readonly IEnumerable<SolicitacaoItemViewModel> _solicitacoes;
 
     public SolicitacoesViewModel(IEnumerable<SolicitacaoModel> lst)
     {
-        _solicitacoes = new List<SolicitacaoViewModel>();
+        _solicitacoes = new List<SolicitacaoItemViewModel>();
 
         foreach(SolicitacaoModel item in lst)
         {
-            SolicitacaoViewModel model = new SolicitacaoViewModel(item);
+            SolicitacaoItemViewModel model = new SolicitacaoItemViewModel(item);
             _solicitacoes.Append(model);
         }
     }
 
-    public IEnumerable<SolicitacaoViewModel> Solicitacoes { get => _solicitacoes; }
+    public IEnumerable<SolicitacaoItemViewModel> Solicitacoes { get => _solicitacoes; }
 }

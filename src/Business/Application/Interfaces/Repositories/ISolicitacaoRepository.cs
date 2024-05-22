@@ -9,4 +9,6 @@ public interface ISolicitacaoRepository
     SolicitacaoModel GetSolicitacaoAberta(long idCliente, long idServico);
     IEnumerable<SolicitacaoModel> GetSolicitacoesAbertas(long idCliente);
     IEnumerable<SolicitacaoModel> GetHistoricoByCliente(long idCliente);
+    
+    IEnumerable<SolicitacaoEmAbertoDTO> GetSolicitacoesEmAberto(long idCliente);
 }

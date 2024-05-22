@@ -33,12 +33,13 @@ Pontos pendentes:
 * CLIENTE
   |
   +-- Painel do Cliente
+  |   |
+  |   +-- Tratar mensagens de erro no momento do cadastro
   |
   +-- Chat com o colaborador
   |
   +-- Adicionar a foto do cliente
-  |   |
-  |   +-- Tratar mensagens de erro no momento do cadastro
+
 
 * COLABORADOR
   |
@@ -53,6 +54,9 @@ Pontos pendentes:
   |   +-- Lista de solicitações em andamento
   |   |
   |   +-- Lista de solicitações em finalizadas
+  |
+  +-- Adicionar a foto do cliente
+  
   
   |
   +-- Chat com o cliente

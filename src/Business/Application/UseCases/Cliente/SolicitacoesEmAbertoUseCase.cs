@@ -12,8 +12,8 @@ public class SolicitacoesEmAbertoUseCase
         _idCliente = idCliente;
     }
 
-    public IEnumerable<SolicitacaoModel> Execute()
+    public IEnumerable<SolicitacaoEmAbertoDTO> Execute()
     {
-        return _solicitacaoRepository.GetSolicitacoesAbertas(_idCliente);
+        return _solicitacaoRepository.GetSolicitacoesEmAberto(_idCliente);
     }
 }

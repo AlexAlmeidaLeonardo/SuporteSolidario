@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using System.Security.Policy;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -62,6 +61,12 @@ namespace SuporteSolidario.Controllers
 
             IndexClienteViewModel viewModel = new IndexClienteViewModel();
             viewModel.TITULO_PAGINA = "Painel do Cliente";
+
+            BuscarClienteByUsuarioUseCase buscarClienteByUsuario = new BuscarClienteByUsuarioUseCase(_clienteRepository, IdUsuarioAutenticado);
+            ClienteEntity cliente = buscarClienteByUsuario.Execute();
+
+            SolicitacoesEmAbertoUseCase solicitacoesEmAberto = new SolicitacoesEmAbertoUseCase(_solicitacaoRepository, cliente.Id);
+            viewModel.listaServicosEmAberto = (List<SolicitacaoEmAbertoDTO>)solicitacoesEmAberto.Execute();
 
             return View(viewModel);
         }
@@ -288,6 +293,8 @@ namespace SuporteSolidario.Controllers
             }            
         }
     
+        #region Solicitação de serviços
+
         [HttpGet]
         public ActionResult SolicitacaoCategoria()
         {
@@ -430,37 +437,9 @@ namespace SuporteSolidario.Controllers
             }
         }
 
-        [HttpGet]
-        public ActionResult Solicitacoes()
-        {
-            try
-            {
-                if (TipoUsuarioAutenticado != TipoUsuario.Cliente)
-                {
-                    return RedirectToAction("Index","Home");
-                }
+        #endregion
 
-                ExisteClienteComIdUsuarioUseCase existeClienteComIdUsuario = new ExisteClienteComIdUsuarioUseCase(_clienteRepository,  IdUsuarioAutenticado);
-                bool existeCliente = existeClienteComIdUsuario.Execute();
-                if(!existeCliente)
-                {
-                    return RedirectToAction("Create","Cliente");
-                }
-
-                SolicitacoesEmAbertoUseCase solicitacoesEmAberto = new SolicitacoesEmAbertoUseCase(_solicitacaoRepository, IdUsuarioAutenticado);
-                IEnumerable<SolicitacaoModel> lst = solicitacoesEmAberto.Execute();
-
-                SolicitacoesViewModel solicitacoes = new SolicitacoesViewModel(lst);
-
-                return View(solicitacoes);
-            }
-            catch(Exception e)
-            {
-                SolicitacoesViewModel solicitacoes = new SolicitacoesViewModel(null);
-                solicitacoes.MENSAGEM_ERRO = e.Message;
-                return View(solicitacoes);
-            }
-        }
+        
     
     }
 }
