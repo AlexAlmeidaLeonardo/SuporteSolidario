@@ -1,3 +1,5 @@
+namespace SuporteSolidarioBusiness.Application.DTOs;
+
 public class SolicitacaoEmAbertoDTO
 {
     public long Id { get; set; }

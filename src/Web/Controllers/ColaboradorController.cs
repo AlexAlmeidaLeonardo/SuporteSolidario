@@ -17,15 +17,17 @@ namespace SuporteSolidario.Controllers
         private readonly ICryptoService _cryptoService;
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly IColaboradorRepository _colaboradorRepository;
+        private readonly IColaboradorServicoRepository _colaboradorServicoRepository;
         private readonly ITokenService _tokenService;
         private readonly IGeoLocalizacaoService _geoLocalizacaoService;
         private readonly IAuthRepository _repo;
 
-        public ColaboradorController(ICryptoService cryptoService, IColaboradorRepository colaboradorRepository, IUsuarioRepository usuarioRepository, ITokenService tokenService, IAuthRepository repo, IGeoLocalizacaoService geoLocalizacaoService)
+        public ColaboradorController(ICryptoService cryptoService, IColaboradorRepository colaboradorRepository, IUsuarioRepository usuarioRepository, IColaboradorServicoRepository colaboradorServicoRepository, ITokenService tokenService, IAuthRepository repo, IGeoLocalizacaoService geoLocalizacaoService)
         {
             _cryptoService = cryptoService;
             _usuarioRepository = usuarioRepository;
             _colaboradorRepository = colaboradorRepository;
+            _colaboradorServicoRepository = colaboradorServicoRepository;
             _tokenService = tokenService;
             _geoLocalizacaoService = geoLocalizacaoService;
             _repo = repo;
@@ -285,5 +287,71 @@ namespace SuporteSolidario.Controllers
                 return View(viewModel);
             }            
         }
+    
+        [HttpGet]
+        public ActionResult Servicos()
+        {
+            try
+            {
+                if (TipoUsuarioAutenticado != TipoUsuario.Colaborador)
+                {
+                    return RedirectToAction("Index","Home");
+                }
+                
+                ExisteColaboradorComIdUsuarioUseCase existeColaboradorComIdUsuario = new ExisteColaboradorComIdUsuarioUseCase(_colaboradorRepository,  IdUsuarioAutenticado);
+                bool existeCliente = existeColaboradorComIdUsuario.Execute();
+                if(!existeCliente)
+                {
+                    return RedirectToAction("Create","Colaborador");
+                }
+
+                BuscarColaboradorByUsuarioUseCase useCase = new BuscarColaboradorByUsuarioUseCase(_colaboradorRepository, IdUsuarioAutenticado);
+                ColaboradorEntity entity = useCase.Execute();
+
+                BuscarServicosDoColaboradorUseCase buscarServicosDoColaborador = new BuscarServicosDoColaboradorUseCase(_colaboradorServicoRepository, entity.Id);
+                IEnumerable<ColaboradorServicoDTO> lstServicosPrestados = buscarServicosDoColaborador.Execute();
+
+                BuscarServicosNaoPrestadosUseCase buscarServicosNaoPrestados = new BuscarServicosNaoPrestadosUseCase(_colaboradorServicoRepository, entity.Id);
+                IEnumerable<ServicoDTO> lstServicosNaoPrestados = buscarServicosNaoPrestados.Execute();
+                
+                ColaboradorPorServicoViewModel viewModel = new ColaboradorPorServicoViewModel();
+                viewModel.TITULO_PAGINA = "Seleção de serviços";
+                viewModel.listColaboradorServicos = lstServicosPrestados;
+                viewModel.listServicos = lstServicosNaoPrestados;
+
+                return View(viewModel);
+    
+            }
+            catch(Exception e)
+            {
+                return View();
+            }
+        }
+
+        [HttpGet]
+        public ActionResult AdicionaServico(long id)
+        {
+            BuscarColaboradorByUsuarioUseCase buscarColaboradorByUsuario = new BuscarColaboradorByUsuarioUseCase(_colaboradorRepository, IdUsuarioAutenticado);
+            ColaboradorEntity entity = buscarColaboradorByUsuario.Execute();
+
+            ColaboradorServicoEntity input = new ColaboradorServicoEntity();
+            input.IdServico = id;
+            input.IdColaborador = entity.Id;
+
+            AdicionarColaboradorServicoUseCase adicionarColaborador = new AdicionarColaboradorServicoUseCase(_colaboradorServicoRepository, input);
+            adicionarColaborador.Execute();
+
+            return RedirectToAction("Servicos", "Colaborador");
+        }
+    
+        [HttpGet]
+        public ActionResult RemoveServico(long id)
+        {
+            RemoverColaboradorServicoUseCase useCase = new RemoverColaboradorServicoUseCase(_colaboradorServicoRepository, id);
+            useCase.Execute();
+
+            return RedirectToAction("Servicos", "Colaborador");
+        }
+
     }
 }

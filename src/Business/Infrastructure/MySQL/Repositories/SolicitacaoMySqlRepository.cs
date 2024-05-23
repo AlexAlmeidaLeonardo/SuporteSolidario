@@ -1,5 +1,6 @@
 namespace SuporteSolidarioBusiness.Infrastructure.MySQL.Repositories;
 
+using SuporteSolidarioBusiness.Application.DTOs;
 using SuporteSolidarioBusiness.Application.Repositories;
 using SuporteSolidarioBusiness.Domain.Entities;
 using SuporteSolidarioBusiness.Infrastructure.Mappers;
@@ -96,39 +97,21 @@ public class SolicitacaoRepository : ISolicitacaoRepository
 
     public IEnumerable<SolicitacaoEmAbertoDTO> GetSolicitacoesEmAberto(long idCliente)
     {
-        
-        IEnumerable<SolicitacaoEmAbertoDTO> lst = _context.Solicitacoes
-                                                    .Join(
-                                                        _context.Servicos,
-                                                        solicitacao => solicitacao.IdServico,
-                                                        servico => servico.Id,
-                                                        (solicitacao, servico) => new 
-                                                        {
-                                                            Id = solicitacao.Id,
-                                                            IdCliente = solicitacao.IdCliente,
-                                                            IdServico = servico.Id,
-                                                            DescricaoCategoria = servico.Categoria.Descricao,                                                            
-                                                            DescricaoServico = servico.Descricao,
-                                                            Data = solicitacao.Data,
-                                                            DataServico = solicitacao.DataServico,
-                                                            Detalhes = solicitacao.Detalhes,
-                                                            EmAberto = solicitacao.EmAberto
-                                                        })
-                                                    .Where( x => x.IdCliente == idCliente && x.EmAberto == true)
-                                                    .OrderBy(o => o.Data)
-                                                    .Select(x => new SolicitacaoEmAbertoDTO()
-                                                    {
-                                                        Id = x.Id,
-                                                        IdCliente = x.IdCliente,
-                                                        IdServico = x.IdServico,
-                                                        DescricaoCategoria = x.DescricaoCategoria,
-                                                        DescricaoServico = x.DescricaoServico,
-                                                        Data = x.Data,
-                                                        DataServico = x.DataServico,
-                                                        Detalhes = x.Detalhes
-                                                    })
-                                                    .ToList();
 
+        IEnumerable<SolicitacaoEmAbertoDTO> lst =   from S in _context.Solicitacoes
+                                                   where S.IdCliente == idCliente & S.EmAberto == true
+                                                 orderby S.Data
+                                                  select new SolicitacaoEmAbertoDTO()
+                                                  {
+                                                        Id = S.Id,
+                                                        IdCliente = S.IdCliente,
+                                                        IdServico = S.IdServico,
+                                                        DescricaoCategoria = S.Servico.Categoria.Descricao,
+                                                        DescricaoServico = S.Servico.Descricao,
+                                                        Data = S.Data,
+                                                        DataServico = S.DataServico,
+                                                        Detalhes = S.Detalhes
+                                                 };
         return lst;
     }
 }

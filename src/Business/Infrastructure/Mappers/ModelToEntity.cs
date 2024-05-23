@@ -230,4 +230,16 @@ public static class ModelToEntity
 
         return lstSaida;
     }
+
+    internal static IEnumerable<ColaboradorServicoEntity> MapListColaboradorServico(IEnumerable<ColaboradorServicoModel> lstModel)
+    {
+        IEnumerable<ColaboradorServicoEntity> lstEntity = new List<ColaboradorServicoEntity>();
+
+        foreach(ColaboradorServicoModel item in lstModel)
+        {
+            lstEntity = lstEntity.Append(MapColaboradorServico(item));
+        }
+
+        return lstEntity;
+    }
 }

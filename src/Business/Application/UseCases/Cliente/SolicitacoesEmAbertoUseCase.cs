@@ -1,5 +1,6 @@
 namespace SuporteSolidarioBusiness.Application.UseCases;
 
+using SuporteSolidarioBusiness.Application.DTOs;
 using SuporteSolidarioBusiness.Application.Repositories;
 
 public class SolicitacoesEmAbertoUseCase

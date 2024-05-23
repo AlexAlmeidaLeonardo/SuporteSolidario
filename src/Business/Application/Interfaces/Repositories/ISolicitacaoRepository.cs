@@ -1,3 +1,4 @@
+using SuporteSolidarioBusiness.Application.DTOs;
 using SuporteSolidarioBusiness.Domain.Entities;
 
 namespace SuporteSolidarioBusiness.Application.Repositories;

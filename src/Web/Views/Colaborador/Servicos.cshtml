@@ -1,0 +1,55 @@
+@using SuporteSolidarioBusiness.Application.DTOs
+@model SuporteSolidario.ViewModel.ColaboradorPorServicoViewModel
+
+<h2>@Model.TITULO_PAGINA</h2>
+<hr/>
+<h4 class="mt-5">Selecione os serviços que deseja prestar</h4>
+
+<div class="row">
+    <div class="col-md-5">
+        <div class="row">
+            <table class="table table-striped table-hover mt-3 text-center table-bordered">
+                <thead>
+                    <tr>
+                        <th colspan="2">Serviços Disponíveis</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(ServicoDTO item in Model.listServicos)
+                    {
+                        <tr>
+                            <td>@item.Descricao</td>
+                            <td>
+                                <a href="@Url.Action("AdicionaServico", "Colaborador")?id=@item.Id"><i class="bi bi-plus-square-fill"></i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-md-2">
+    </div>
+    <div class="col-md-5">
+        <div class="row">
+            <table class="table table-striped table-hover mt-3 text-center table-bordered">
+                <thead>
+                    <tr>
+                        <th colspan="2">Serviços Selecionados</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(ColaboradorServicoDTO item in Model.listColaboradorServicos)
+                    {
+                        <tr>
+                            <td>
+                                <a href="@Url.Action("RemoveServico", "Colaborador")?id=@item.Id"><i class="bi bi-dash-square-fill"></i></a>
+                            </td>
+                            <td>@item.DescricaoServico</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
