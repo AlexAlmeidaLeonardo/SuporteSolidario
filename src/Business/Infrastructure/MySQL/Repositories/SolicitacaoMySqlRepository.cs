@@ -97,7 +97,6 @@ public class SolicitacaoRepository : ISolicitacaoRepository
 
     public IEnumerable<SolicitacaoEmAbertoDTO> GetSolicitacoesEmAberto(long idCliente)
     {
-
         IEnumerable<SolicitacaoEmAbertoDTO> lst =   from S in _context.Solicitacoes
                                                    where S.IdCliente == idCliente & S.EmAberto == true
                                                  orderby S.Data
@@ -163,5 +162,24 @@ public class SolicitacaoRepository : ISolicitacaoRepository
         }
 
         return lstRetorno;
+    }
+
+    public IEnumerable<SolicitacaoEmAbertoDTO> GetSolicitacoesAtendidas(long idCliente)
+    {
+         IEnumerable<SolicitacaoEmAbertoDTO> lst =   from S in _context.Solicitacoes
+                                                   where S.IdCliente == idCliente & S.EmAberto == false
+                                                 orderby S.Data
+                                                  select new SolicitacaoEmAbertoDTO()
+                                                  {
+                                                        Id = S.Id,
+                                                        IdCliente = S.IdCliente,
+                                                        IdServico = S.IdServico,
+                                                        DescricaoCategoria = S.Servico.Categoria.Descricao,
+                                                        DescricaoServico = S.Servico.Descricao,
+                                                        Data = S.Data,
+                                                        DataServico = S.DataServico,
+                                                        Detalhes = S.Detalhes
+                                                 };
+        return lst;
     }
 }

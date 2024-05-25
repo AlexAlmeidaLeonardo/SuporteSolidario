@@ -10,6 +10,7 @@ public interface ISolicitacaoRepository
     IEnumerable<SolicitacaoDistanciaDTO> BuscarPorColaboradorDTO(long idColaborador, double _distanciaEmKm);
     SolicitacaoModel GetSolicitacaoAberta(long idCliente, long idServico);
     IEnumerable<SolicitacaoModel> GetSolicitacoesAbertas(long idCliente);
+    IEnumerable<SolicitacaoEmAbertoDTO> GetSolicitacoesAtendidas(long idCliente);
     IEnumerable<SolicitacaoModel> GetHistoricoByCliente(long idCliente);
     
     IEnumerable<SolicitacaoEmAbertoDTO> GetSolicitacoesEmAberto(long idCliente);
