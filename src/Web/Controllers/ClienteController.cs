@@ -66,7 +66,7 @@ namespace SuporteSolidario.Controllers
             ClienteEntity cliente = buscarClienteByUsuario.Execute();
 
             SolicitacoesEmAbertoUseCase solicitacoesEmAberto = new SolicitacoesEmAbertoUseCase(_solicitacaoRepository, cliente.Id);
-            viewModel.listaServicosEmAberto = (List<SolicitacaoEmAbertoDTO>)solicitacoesEmAberto.Execute();
+            viewModel.listaServicosEmAberto = solicitacoesEmAberto.Execute();
 
             return View(viewModel);
         }

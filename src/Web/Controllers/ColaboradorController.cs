@@ -18,16 +18,18 @@ namespace SuporteSolidario.Controllers
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly IColaboradorRepository _colaboradorRepository;
         private readonly IColaboradorServicoRepository _colaboradorServicoRepository;
+        private readonly ISolicitacaoRepository _solicitacaoRepository;
         private readonly ITokenService _tokenService;
         private readonly IGeoLocalizacaoService _geoLocalizacaoService;
         private readonly IAuthRepository _repo;
 
-        public ColaboradorController(ICryptoService cryptoService, IColaboradorRepository colaboradorRepository, IUsuarioRepository usuarioRepository, IColaboradorServicoRepository colaboradorServicoRepository, ITokenService tokenService, IAuthRepository repo, IGeoLocalizacaoService geoLocalizacaoService)
+        public ColaboradorController(ICryptoService cryptoService, IColaboradorRepository colaboradorRepository, IUsuarioRepository usuarioRepository, IColaboradorServicoRepository colaboradorServicoRepository, ISolicitacaoRepository solicitacaoRepository, ITokenService tokenService, IAuthRepository repo, IGeoLocalizacaoService geoLocalizacaoService)
         {
             _cryptoService = cryptoService;
             _usuarioRepository = usuarioRepository;
             _colaboradorRepository = colaboradorRepository;
             _colaboradorServicoRepository = colaboradorServicoRepository;
+            _solicitacaoRepository = solicitacaoRepository;
             _tokenService = tokenService;
             _geoLocalizacaoService = geoLocalizacaoService;
             _repo = repo;
@@ -47,15 +49,19 @@ namespace SuporteSolidario.Controllers
                 return RedirectToAction("Index","Home");
             }
             
-            ExisteColaboradorComIdUsuarioUseCase existeColaboradorComIdUsuario = new ExisteColaboradorComIdUsuarioUseCase(_colaboradorRepository,  IdUsuarioAutenticado);
-            bool existeCliente = existeColaboradorComIdUsuario.Execute();
-            if(!existeCliente)
+            BuscarColaboradorByUsuarioUseCase buscarColaboradorByUsuario = new BuscarColaboradorByUsuarioUseCase(_colaboradorRepository, IdUsuarioAutenticado);
+            ColaboradorEntity colaborador = buscarColaboradorByUsuario.Execute();
+
+            if(colaborador == null)
             {
                 return RedirectToAction("Create","Colaborador");
             }
 
-            IndexClienteViewModel viewModel = new IndexClienteViewModel();
+            BuscarSolicitacoesPorProximidadeUseCase buscarSolicitacoesPorProximidade = new BuscarSolicitacoesPorProximidadeUseCase(_solicitacaoRepository, colaborador.Id, 100);
+            
+            IndexColaboradorViewModel viewModel = new IndexColaboradorViewModel();
             viewModel.TITULO_PAGINA = "Painel do Colaborador";
+            viewModel.listaServicosEmAberto = buscarSolicitacoesPorProximidade.Execute();
 
             return View(viewModel);
         }
@@ -311,10 +317,49 @@ namespace SuporteSolidario.Controllers
                 BuscarServicosDoColaboradorUseCase buscarServicosDoColaborador = new BuscarServicosDoColaboradorUseCase(_colaboradorServicoRepository, entity.Id);
                 IEnumerable<ColaboradorServicoDTO> lstServicosPrestados = buscarServicosDoColaborador.Execute();
 
-                BuscarServicosNaoPrestadosUseCase buscarServicosNaoPrestados = new BuscarServicosNaoPrestadosUseCase(_colaboradorServicoRepository, entity.Id);
+                BuscarServicosNaoPrestadosUseCase buscarServicosNaoPrestados = new BuscarServicosNaoPrestadosUseCase(_colaboradorServicoRepository, entity.Id, null);
                 IEnumerable<ServicoDTO> lstServicosNaoPrestados = buscarServicosNaoPrestados.Execute();
                 
                 ColaboradorPorServicoViewModel viewModel = new ColaboradorPorServicoViewModel();
+                viewModel.TITULO_PAGINA = "Seleção de serviços";
+                viewModel.listColaboradorServicos = lstServicosPrestados;
+                viewModel.listServicos = lstServicosNaoPrestados;
+
+                return View(viewModel);
+    
+            }
+            catch(Exception e)
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public ActionResult Servicos(ColaboradorPorServicoViewModel viewModel)
+        {
+            try
+            {
+                if (TipoUsuarioAutenticado != TipoUsuario.Colaborador)
+                {
+                    return RedirectToAction("Index","Home");
+                }
+                
+                ExisteColaboradorComIdUsuarioUseCase existeColaboradorComIdUsuario = new ExisteColaboradorComIdUsuarioUseCase(_colaboradorRepository,  IdUsuarioAutenticado);
+                bool existeCliente = existeColaboradorComIdUsuario.Execute();
+                if(!existeCliente)
+                {
+                    return RedirectToAction("Create","Colaborador");
+                }
+
+                BuscarColaboradorByUsuarioUseCase useCase = new BuscarColaboradorByUsuarioUseCase(_colaboradorRepository, IdUsuarioAutenticado);
+                ColaboradorEntity entity = useCase.Execute();
+
+                BuscarServicosDoColaboradorUseCase buscarServicosDoColaborador = new BuscarServicosDoColaboradorUseCase(_colaboradorServicoRepository, entity.Id);
+                IEnumerable<ColaboradorServicoDTO> lstServicosPrestados = buscarServicosDoColaborador.Execute();
+
+                BuscarServicosNaoPrestadosUseCase buscarServicosNaoPrestados = new BuscarServicosNaoPrestadosUseCase(_colaboradorServicoRepository, entity.Id, viewModel.PesquisaDescricao);
+                IEnumerable<ServicoDTO> lstServicosNaoPrestados = buscarServicosNaoPrestados.Execute();
+                
                 viewModel.TITULO_PAGINA = "Seleção de serviços";
                 viewModel.listColaboradorServicos = lstServicosPrestados;
                 viewModel.listServicos = lstServicosNaoPrestados;

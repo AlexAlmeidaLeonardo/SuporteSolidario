@@ -76,7 +76,8 @@ public class ClienteMySqlRepository : IClienteRepository
 
         if(model is null)
         {
-            throw new NotFoundException($"Cliente com id {id} não encontrado");
+            return null;
+            //throw new NotFoundException($"Cliente com id {id} não encontrado");
         }
 
         ClienteEntity entity = ModelToEntity.MapCliente(model);

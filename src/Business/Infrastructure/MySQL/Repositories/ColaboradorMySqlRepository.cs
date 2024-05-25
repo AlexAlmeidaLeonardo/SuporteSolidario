@@ -83,7 +83,8 @@ public class ColaboradorMySqlRepository : IColaboradorRepository
         
         if(model is null)
         {
-            throw new NotFoundException($"Colaborador com id de usuário {id} não encontrado");
+            return null;
+            //throw new NotFoundException($"Colaborador com id de usuário {id} não encontrado");
         }
 
         ColaboradorEntity entity = ModelToEntity.MapColaborador(model);

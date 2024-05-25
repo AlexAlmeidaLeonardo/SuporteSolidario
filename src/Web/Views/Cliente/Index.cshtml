@@ -11,8 +11,8 @@
 @if(modoDev)
 {
     <h4>Aqui teremos a página com o painel de controle do cliente</h4>
-    <div class="row justify-content-center mt-5">
-        <div class="col-md-4">
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-3">
             <div class="row">
                 <a href="@Url.Action("Edit", "Cliente")" class="btn btn-primary btn-block">Conta</a>
             </div>
@@ -35,14 +35,18 @@
                 <a href="@Url.Action("Logout", "Cliente")" class="btn btn-primary btn-block mt-3">Logout</a>
             </div>
         </div>
-        <div class="col-md-8 border">
+        <div class="col-md-1">
+        </div>
+
+        <div class="col-md-8">
+
             <div class="row">
                 <center>
-                    <h5>Solicitações em aberto</h5>
+                    <h5>Novas Solicitações</h5>
                 </center>
             </div>
             <div class="row">
-                <table class="table table-striped table-hover mt-3 text-center table-bordered">
+                <table class="table table-striped table-hover text-center table-bordered">
                     <thead>
                         <tr>
                             <th>Data</th>
@@ -58,18 +62,15 @@
                             <th>@item.Data.ToString("dd/MM/yyyy")</th>
                             <th>@item.DescricaoServico</th>
                             <th>@item.DataServico.ToString("dd/MM/yyyy")</th>
-                            <th><img src="~/img/favicon/delete.png" width="10px" height="20px" class="card-img-top"></th>
+                            <th><i class="bi bi-zoom-in" title="Mais informações" style="color:green;"></i></th>
                         </tr>
                     }
                     </tbody>
                 </table>
             </div>
+
         </div>
-    </div>
-    <div class="row mt-5">
-        <img src="~/img/rascunhos/perfil_cliente.jpeg" width="100px" height="550px" />
-    </div>
-    
+    </div>    
 }
 else
 {

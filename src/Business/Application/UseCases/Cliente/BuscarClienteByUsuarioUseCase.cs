@@ -19,7 +19,8 @@ public class BuscarClienteByUsuarioUseCase
         ClienteEntity entity = _repo.LerByUsuario(_id);
         if(entity is null)
         {
-            throw new NotFoundException($"Cliente com id {_id} não encontrado");
+            return null;
+            //throw new NotFoundException($"Cliente com id {_id} não encontrado");
         }
 
         return entity;

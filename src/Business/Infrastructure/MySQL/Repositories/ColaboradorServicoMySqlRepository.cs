@@ -84,6 +84,30 @@ public class ColaboradorServicoMySqlRepository : IColaboradorServicoRepository
         // Obtenha os serviços que o colaborador não presta
         var servicosNaoPrestados = from s in todosOsServicos
                                 where !servicosPrestados.Contains(s.Id)
+                                orderby s.IdCategoria, s.Descricao
+                                select new ServicoDTO()
+                                {
+                                    Id = s.Id,
+                                    Descricao = s.Descricao
+                                };
+
+        return servicosNaoPrestados.ToList();
+    }
+
+    public IEnumerable<ServicoDTO> GetServicosNaoPrestadosPorColaborador(long idColaborador, string descricao)
+    {
+        // Obtenha todos os serviços
+        var todosOsServicos = _context.Servicos;
+
+        // Obtenha os serviços prestados pelo colaborador
+        var servicosPrestados = from CS in _context.ColaboradorServicos
+                                where CS.IdColaborador == idColaborador
+                                select CS.IdServico;
+
+        // Obtenha os serviços que o colaborador não presta
+        var servicosNaoPrestados = from s in todosOsServicos
+                                where !servicosPrestados.Contains(s.Id) &&  s.Descricao.Contains(descricao)
+                                orderby s.Descricao
                                 select new ServicoDTO()
                                 {
                                     Id = s.Id,

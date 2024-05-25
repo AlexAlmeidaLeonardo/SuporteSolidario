@@ -14,5 +14,7 @@ public interface IColaboradorServicoRepository
 
     IEnumerable<ServicoDTO> GetServicosNaoPrestadosPorColaborador(long idColaborador);
 
+    IEnumerable<ServicoDTO> GetServicosNaoPrestadosPorColaborador(long idColaborador, string descricao);
+
     void Remover(long id);
 }

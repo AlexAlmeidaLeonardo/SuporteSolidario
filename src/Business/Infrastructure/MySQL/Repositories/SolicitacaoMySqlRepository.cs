@@ -114,4 +114,54 @@ public class SolicitacaoRepository : ISolicitacaoRepository
                                                  };
         return lst;
     }
+
+    double CalcularDistancia(double lat1, double lon1, double lat2, double lon2)
+    {
+        var dLat = (lat2 - lat1) * (Math.PI / 180.0);
+        var dLon = (lon2 - lon1) * (Math.PI / 180.0);
+
+        var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
+                Math.Cos(lat1 * (Math.PI / 180.0)) * Math.Cos(lat2 * (Math.PI / 180.0)) *
+                Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
+        var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+        var d = 6371 * c;
+        return d;
+    }
+    
+    public IEnumerable<SolicitacaoDistanciaDTO> BuscarPorColaboradorDTO(long idColaborador, double distanciaEmKm)
+    {
+        List<SolicitacaoDistanciaDTO> lstRetorno = new List<SolicitacaoDistanciaDTO>();
+
+        IQueryable<ColaboradorModel> queryColaborador =   from c in _context.Colaboradores
+                                                         where c.Id == idColaborador
+                                                        select c;
+
+        ColaboradorModel colaborador = queryColaborador.FirstOrDefault();
+
+        if(colaborador == null)
+            return lstRetorno;
+        
+        var result = from s in _context.Solicitacoes
+             join y in _context.ColaboradorServicos on s.IdServico equals y.IdServico
+             join x in _context.Servicos on s.IdServico equals x.Id
+             select new SolicitacaoDistanciaDTO()
+             {
+                 Id = s.Id,
+                 DescricaoServico = x.Descricao,
+                 Latitude = s.Latitude,
+                 Longitude = s.Longitude,
+                 DataDaSolicitacao = s.Data,
+                 DataDoServico = s.DataServico,
+                 DistanciaEmKm = -1
+             };
+
+        lstRetorno = result.ToList();
+
+        foreach(SolicitacaoDistanciaDTO item in lstRetorno)
+        {
+            item.DistanciaEmKm = CalcularDistancia(colaborador.Latitude, colaborador.Longitude, item.Latitude, item.Longitude);
+        }
+
+        return lstRetorno;
+    }
 }

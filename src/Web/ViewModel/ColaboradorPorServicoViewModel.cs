@@ -8,4 +8,6 @@ public class ColaboradorPorServicoViewModel: BaseViewModel
 
     public IEnumerable<ServicoDTO> listServicos;
 
+    public string PesquisaDescricao { get; set; }
+
 }

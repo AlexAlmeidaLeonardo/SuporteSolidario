@@ -47,7 +47,7 @@ Pontos pendentes:
   |   |
   |   +-- Tratar mensagens de erro no momento do cadastro
   |   |
-  |   +-- Cadastro do serviços prestados pelo colaborador
+  |   +-- Cadastro do serviços prestados pelo colaborador - OK (mas requer aprimoramentos visuais)
   |   |
   |   +-- Lista de solicitações em aberto
   |   |

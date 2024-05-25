@@ -17,7 +17,14 @@ public class BuscarSolicitacoesPorProximidadeUseCase
         _distanciaEmKm = distanciaEmKm;
     }
 
-    public IEnumerable<SolicitacaoEntity> Execute()
+    public IEnumerable<SolicitacaoDistanciaDTO> Execute()
+    {
+        IEnumerable<SolicitacaoDistanciaDTO> lst = _repo.BuscarPorColaboradorDTO(_idColaborador, _distanciaEmKm);
+        
+        return lst;
+    }
+
+    public IEnumerable<SolicitacaoEntity> Execute2()
     {
         IEnumerable<SolicitacaoModel> lst = _repo.BuscarPorColaborador(_idColaborador, _distanciaEmKm);
 

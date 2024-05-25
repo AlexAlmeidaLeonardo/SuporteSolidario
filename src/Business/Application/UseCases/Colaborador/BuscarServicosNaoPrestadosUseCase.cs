@@ -7,16 +7,24 @@ public class BuscarServicosNaoPrestadosUseCase
 {
     private readonly IColaboradorServicoRepository _colaboradorServicoRepository;
     private readonly long _idColaborador;
+    private readonly string _descricao;
     
-    public BuscarServicosNaoPrestadosUseCase(IColaboradorServicoRepository colaboradorServicoRepository, long idColaborador)
+    public BuscarServicosNaoPrestadosUseCase(IColaboradorServicoRepository colaboradorServicoRepository, long idColaborador, string descricao)
     {
-        _idColaborador = idColaborador;
         _colaboradorServicoRepository = colaboradorServicoRepository;
+        _idColaborador = idColaborador;
+        _descricao = descricao;
     }
 
     public IEnumerable<ServicoDTO> Execute()
     {
-        IEnumerable<ServicoDTO> lst = _colaboradorServicoRepository.GetServicosNaoPrestadosPorColaborador(_idColaborador);
+        IEnumerable<ServicoDTO> lst;
+
+        if(string.IsNullOrEmpty(_descricao))
+            lst = _colaboradorServicoRepository.GetServicosNaoPrestadosPorColaborador(_idColaborador);
+        else
+            lst = _colaboradorServicoRepository.GetServicosNaoPrestadosPorColaborador(_idColaborador, _descricao);
+            
         return lst;
     }
 }

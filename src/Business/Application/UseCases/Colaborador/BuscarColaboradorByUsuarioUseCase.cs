@@ -19,7 +19,8 @@ public class BuscarColaboradorByUsuarioUseCase
         ColaboradorEntity entity = _repo.LerByUsuario(_id);
         if(entity is null)
         {
-            throw new NotFoundException($"Colaborador com id {_id} não encontrado");
+            return null;
+            //throw new NotFoundException($"Colaborador com id {_id} não encontrado");
         }
 
         return entity;
