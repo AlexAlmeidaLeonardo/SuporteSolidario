@@ -12,5 +12,8 @@
   <ItemGroup>
     <ProjectReference Include="../Business/SuporteSolidarioBusiness.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="script-servicos.sql" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 
 </Project>
