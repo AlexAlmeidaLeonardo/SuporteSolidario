@@ -17,6 +17,7 @@ public class SolicitacaoEmAndamentoDTO
     public string DescricaoServico { get; set; }
 
     public string Colaborador { get; set; }
+    public string Cliente { get; set; }
 
     public DateTime Data { get; set; }
 

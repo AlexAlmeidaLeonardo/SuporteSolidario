@@ -72,7 +72,7 @@ public class ClienteController : BaseController
         SolicitacoesEmAbertoUseCase solicitacoesEmAberto = new SolicitacoesEmAbertoUseCase(_solicitacaoRepository, cliente.Id);
         viewModel.listaServicosEmAberto = solicitacoesEmAberto.Execute();
 
-        BuscarSolicitacoesComAtendimentosUseCase buscarSolicitacoesComAtendimentos = new BuscarSolicitacoesComAtendimentosUseCase(_solicitacaoRepository, cliente.Id);
+        BuscarSolicitacoesComAtendimentosPorClienteUseCase buscarSolicitacoesComAtendimentos = new BuscarSolicitacoesComAtendimentosPorClienteUseCase(_solicitacaoRepository, cliente.Id);
         viewModel.listaServicosEmAndamento = buscarSolicitacoesComAtendimentos.Execute();
 
         return View(viewModel);

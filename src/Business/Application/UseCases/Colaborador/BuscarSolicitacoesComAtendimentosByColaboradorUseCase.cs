@@ -3,19 +3,19 @@ using SuporteSolidarioBusiness.Application.Repositories;
 
 namespace SuporteSolidarioBusiness.Application.UseCases;
 
-public class BuscarSolicitacoesComAtendimentosPorClienteUseCase
+public class BuscarSolicitacoesComAtendimentosByColaborador
 {
     private readonly ISolicitacaoRepository _solicitacaoRepository;
-    private readonly long _idCliente;
+    private readonly long _idColaborador;
 
-    public BuscarSolicitacoesComAtendimentosPorClienteUseCase(ISolicitacaoRepository solicitacaoRepository, long idCliente)
+    public BuscarSolicitacoesComAtendimentosByColaborador(ISolicitacaoRepository solicitacaoRepository, long idColaborador)
     {
         _solicitacaoRepository = solicitacaoRepository;
-        _idCliente = idCliente;
+        _idColaborador = idColaborador;
     }
 
     public List<SolicitacaoEmAndamentoDTO> Execute()
     {
-        return _solicitacaoRepository.BuscarSolicitacoesComAtendimentosByCliente(_idCliente);
+        return _solicitacaoRepository.BuscarSolicitacoesComAtendimentosByCliente(_idColaborador);
     }
 }

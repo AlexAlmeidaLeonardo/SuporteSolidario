@@ -145,6 +145,7 @@ public class SolicitacaoRepository : ISolicitacaoRepository
         var result = from s in _context.Solicitacoes
              join y in _context.ColaboradorServicos on s.IdServico equals y.IdServico
              join x in _context.Servicos on s.IdServico equals x.Id
+            where !_context.Atendimentos.Select(a => a.IdSolicitacao).Contains(s.Id)
              select new SolicitacaoDistanciaDTO()
              {
                  Id = s.Id,
@@ -186,13 +187,14 @@ public class SolicitacaoRepository : ISolicitacaoRepository
         return lst;
     }
 
-    public List<SolicitacaoEmAndamentoDTO> BuscarSolicitacoesComAtendimentos(long idCliente)
+    public List<SolicitacaoEmAndamentoDTO> BuscarSolicitacoesComAtendimentosByCliente(long idCliente)
     {
         IQueryable<SolicitacaoEmAndamentoDTO> queryRetorno =      from S            in _context.Solicitacoes
                                                                   join A            in _context.Atendimentos on S.Id equals A.IdSolicitacao
                                                                   join Servico      in _context.Servicos on S.IdServico equals Servico.Id
                                                                   join Categoria    in _context.Categorias on Servico.IdCategoria equals Categoria.Id
                                                                   join Colaborador  in _context.Colaboradores on A.IdColaborador equals Colaborador.Id
+                                                                 where S.IdCliente == idCliente 
                                                                 select new SolicitacaoEmAndamentoDTO
                                                                 {
                                                                     Id = S.Id,
@@ -205,7 +207,33 @@ public class SolicitacaoRepository : ISolicitacaoRepository
                                                                     Data = S.Data,
                                                                     DataServico = S.DataServico,
                                                                     Detalhes = S.Detalhes,
-                                                                    Colaborador = Colaborador.Nome + " " + Colaborador.Sobrenome
+                                                                    Colaborador = Colaborador.Nome + " " + Colaborador.Sobrenome,
+                                                                };
+                                                                        
+        return queryRetorno.ToList();
+    }
+
+    public List<SolicitacaoEmAndamentoDTO> BuscarSolicitacoesComAtendimentosByColaborador(long idColaborador)
+    {
+        IQueryable<SolicitacaoEmAndamentoDTO> queryRetorno =      from S            in _context.Solicitacoes
+                                                                  join A            in _context.Atendimentos on S.Id equals A.IdSolicitacao
+                                                                  join Servico      in _context.Servicos on S.IdServico equals Servico.Id
+                                                                  join Categoria    in _context.Categorias on Servico.IdCategoria equals Categoria.Id
+                                                                  join Cliente      in _context.Clientes on S.IdCliente equals Cliente.Id
+                                                                  where A.IdColaborador == idColaborador 
+                                                                select new SolicitacaoEmAndamentoDTO
+                                                                {
+                                                                    Id = S.Id,
+                                                                    IdCliente = S.IdCliente,
+                                                                    IdServico = S.IdServico,
+                                                                    IdAtendimento = A.Id,
+                                                                    IdSolicitacao = S.Id,
+                                                                    DescricaoCategoria = Categoria.Descricao,
+                                                                    DescricaoServico = Servico.Descricao,
+                                                                    Data = S.Data,
+                                                                    DataServico = S.DataServico,
+                                                                    Detalhes = S.Detalhes,
+                                                                    Cliente = Cliente.Nome + " " + Cliente.Sobrenome,
                                                                 };
                                                                         
         return queryRetorno.ToList();

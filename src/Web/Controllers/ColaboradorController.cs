@@ -69,6 +69,9 @@ public class ColaboradorController : BaseController
         viewModel.TITULO_PAGINA = "Painel do Colaborador";
         viewModel.listaServicosEmAberto = buscarSolicitacoesPorProximidade.Execute();
 
+        BuscarSolicitacoesComAtendimentosByColaborador buscarSolicitacoesComAtendimentos = new BuscarSolicitacoesComAtendimentosByColaborador(_solicitacaoRepository, colaborador.Id);
+        viewModel.listaServicosEmAndamento = buscarSolicitacoesComAtendimentos.Execute();
+
         return View(viewModel);
     }
 
