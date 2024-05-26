@@ -15,6 +15,8 @@ public class AtendimentoModel: BaseModel
 
     public DateTime AtendidoEm { get; set; } = DateTime.Now;
 
+    public DateTime? RecusadoEm { get; set; }
+
     public DateTime? ConfirmadoEm { get; set; }
 
     public DateTime? FinalizadoEm { get; set; }

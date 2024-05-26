@@ -126,9 +126,9 @@ public static class ModelToEntity
         {
             Id = model.Id,
 
-            IdColaborador = model.Colaborador.Id,
+            IdColaborador = model.IdColaborador,
 
-            IdServico = model.Servico.Id
+            IdServico = model.IdServico
         };
 
         return entity;
@@ -139,7 +139,7 @@ public static class ModelToEntity
         AtendimentoMensagemEntity entity = new AtendimentoMensagemEntity
         {
             Id = model.Id,
-            IdAtendimento = model.Atendimento.Id,
+            IdAtendimento = model.IdAtendimento,
             Mensagem = model.Mensagem,
             IsCliente = model.IsCliente,
             IdEmResposta = model.IdEmResposta,
@@ -157,10 +157,10 @@ public static class ModelToEntity
             Id = model.Id,
             AtendidoEm = model.AtendidoEm,
             Avaliacao = model.Avaliacao,
-            IdColaborador = model.Colaborador.Id,
+            IdColaborador = model.IdColaborador,
             ConfirmadoEm = model.ConfirmadoEm,
             FinalizadoEm = model.FinalizadoEm,
-            IdSolicitacao = model.Solicitacao.Id
+            IdSolicitacao = model.IdSolicitacao
         };
 
         return entity;

@@ -3,12 +3,12 @@ using SuporteSolidarioBusiness.Domain.Entities;
 
 namespace SuporteSolidarioBusiness.Application.UseCases;
 
-public class AtendimentoUseCase
+public class AdicionarAtendimentoUseCase
 {
     private readonly IAtendimentoRepository _repo;
     private readonly AtendimentoEntity _input;
 
-    public AtendimentoUseCase(IAtendimentoRepository repo, AtendimentoEntity input)
+    public AdicionarAtendimentoUseCase(IAtendimentoRepository repo, AtendimentoEntity input)
     {
         _repo = repo;
         _input = input;

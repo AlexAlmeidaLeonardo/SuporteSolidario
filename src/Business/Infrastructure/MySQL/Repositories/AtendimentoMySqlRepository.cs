@@ -15,16 +15,30 @@ public class AtendimentoMySqlRepository: IAtendimentoRepository
 
     public AtendimentoEntity Adicionar(AtendimentoEntity obj)
     {
-        AtendimentoModel model = EntityToModel.MapAtendimento(obj);
-        model.AtendidoEm = DateTime.Now;
+        try
+        {
+            ColaboradorModel colaborador = _context.Colaboradores.Where(x => x.Id == obj.IdColaborador).FirstOrDefault();
+            if(colaborador == null)
+            {
+                throw new Exception("Colaborador não encontrado");
+            }
 
-        _context.Atendimentos.Add(model);
+            AtendimentoModel model = EntityToModel.MapAtendimento(obj);
+            model.AtendidoEm = DateTime.Now;
+            model.Colaborador = colaborador;
 
-        _context.SaveChanges();
+            _context.Atendimentos.Add(model);
 
-        AtendimentoEntity entity = ModelToEntity.MapAtendimento(model);
+            _context.SaveChanges();
 
-        return entity;
+            AtendimentoEntity entity = ModelToEntity.MapAtendimento(model);
+
+            return entity;
+        }
+        catch(Exception e)
+        {
+            throw e;
+        }
     }
 
     public bool SetAsAtendido(long id)
@@ -74,6 +88,24 @@ public class AtendimentoMySqlRepository: IAtendimentoRepository
         }
 
         model.FinalizadoEm = DateTime.Now;
+
+        _context.Atendimentos.Update(model);
+
+        int affecteds =_context.SaveChanges();
+
+        return affecteds > 0;
+    }
+
+    public bool SetAsRecusado(long id)
+    {
+        AtendimentoModel? model = _context.Atendimentos.Where(x => x.Id == id).FirstOrDefault();
+
+        if(model is null)
+        {
+            throw new NotFoundException($"Atendimento com id {id} não encontrado");
+        }
+
+        model.RecusadoEm = DateTime.Now;
 
         _context.Atendimentos.Update(model);
 

@@ -1,0 +1,49 @@
+@using SuporteSolidario.ViewModel
+@model DetalhesSolicitacaoViewModel
+
+
+@{
+    bool hasError = false;
+    if(!String.IsNullOrEmpty(Model.MENSAGEM_ERRO))
+    {
+        hasError = true;
+    }
+}
+
+<h2>@Model.TITULO_PAGINA</h2>
+
+<div class="container">
+    <div class="row justify-content-center mt-5">
+        <center>
+            <div class="col-md-3 mt-5"></div>
+            <div class="col-md-6 mt-5">
+                <p>Solicitação n° <strong>@Model.IdSolicitacao</strong></p>
+                <p>Nome: <strong>@Model.NomeCliente</strong></p>
+                <p>Categoria: <strong>@Model.DescricaoCategoria</strong></p>
+                <p>Serviço: <strong>@Model.DescricaoServico</strong></p>
+                <p>Distância: <strong>@Model.DistanciaEmKm</strong></p>
+                <p>Data do Serviço: <strong>@Model.DataServico</strong></p>
+                <p>Detalhes do serviço: <strong>@Model.DescricaoServico</strong></p>
+            </div>
+            <div class="col-md-3 mt-5"></div>
+        </center>
+    </div>
+    <div class="row justify-content-center mt-1">
+        <div class="col-md-6 mt-1">
+            <center><a href="@Url.Action("AceitarSolicitacao", "Colaborador", new {idSolicitacao = Model.IdSolicitacao} )" class="btn btn-primary">Aceitar</a></center>
+        </div>
+        <div class="col-md-6 mt-1">
+            <center><a href="@Url.Action("RecusarSolicitacao", "Colaborador", new {idSolicitacao = Model.IdSolicitacao} )" class="btn btn-primary">Recusar</a></center>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-5">
+        <a href="@Url.Action("Index", "Colaborador", new {idSolicitacao = Model.IdSolicitacao} )" class="btn btn-primary">Recusar</a>        
+    </div>
+</div>
+
+@if(hasError)
+{
+    <br/>
+    <br/>
+    <center><strong class="text-danger">@Model.MENSAGEM_ERRO</strong></center>
+}

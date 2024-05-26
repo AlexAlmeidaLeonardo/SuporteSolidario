@@ -98,7 +98,9 @@ public class SolicitacaoRepository : ISolicitacaoRepository
     public IEnumerable<SolicitacaoEmAbertoDTO> GetSolicitacoesEmAberto(long idCliente)
     {
         IEnumerable<SolicitacaoEmAbertoDTO> lst =   from S in _context.Solicitacoes
-                                                   where S.IdCliente == idCliente & S.EmAberto == true
+                                                   where S.IdCliente == idCliente 
+                                                      && S.EmAberto == true
+                                                      && !_context.Atendimentos.Select(a => a.IdSolicitacao).Contains(S.Id) 
                                                  orderby S.Data
                                                   select new SolicitacaoEmAbertoDTO()
                                                   {
@@ -167,7 +169,8 @@ public class SolicitacaoRepository : ISolicitacaoRepository
     public IEnumerable<SolicitacaoEmAbertoDTO> GetSolicitacoesAtendidas(long idCliente)
     {
          IEnumerable<SolicitacaoEmAbertoDTO> lst =   from S in _context.Solicitacoes
-                                                   where S.IdCliente == idCliente & S.EmAberto == false
+                                                   where S.IdCliente == idCliente
+                                                       && S.EmAberto == false
                                                  orderby S.Data
                                                   select new SolicitacaoEmAbertoDTO()
                                                   {
@@ -181,5 +184,30 @@ public class SolicitacaoRepository : ISolicitacaoRepository
                                                         Detalhes = S.Detalhes
                                                  };
         return lst;
+    }
+
+    public List<SolicitacaoEmAndamentoDTO> BuscarSolicitacoesComAtendimentos(long idCliente)
+    {
+        IQueryable<SolicitacaoEmAndamentoDTO> queryRetorno =      from S            in _context.Solicitacoes
+                                                                  join A            in _context.Atendimentos on S.Id equals A.IdSolicitacao
+                                                                  join Servico      in _context.Servicos on S.IdServico equals Servico.Id
+                                                                  join Categoria    in _context.Categorias on Servico.IdCategoria equals Categoria.Id
+                                                                  join Colaborador  in _context.Colaboradores on A.IdColaborador equals Colaborador.Id
+                                                                select new SolicitacaoEmAndamentoDTO
+                                                                {
+                                                                    Id = S.Id,
+                                                                    IdCliente = S.IdCliente,
+                                                                    IdServico = S.IdServico,
+                                                                    IdAtendimento = A.Id,
+                                                                    IdSolicitacao = S.Id,
+                                                                    DescricaoCategoria = Categoria.Descricao,
+                                                                    DescricaoServico = Servico.Descricao,
+                                                                    Data = S.Data,
+                                                                    DataServico = S.DataServico,
+                                                                    Detalhes = S.Detalhes,
+                                                                    Colaborador = Colaborador.Nome + " " + Colaborador.Sobrenome
+                                                                };
+                                                                        
+        return queryRetorno.ToList();
     }
 }

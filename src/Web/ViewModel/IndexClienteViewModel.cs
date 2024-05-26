@@ -5,4 +5,6 @@ namespace SuporteSolidario.ViewModel;
 public class IndexClienteViewModel: BaseViewModel
 {
     public IEnumerable<SolicitacaoEmAbertoDTO> listaServicosEmAberto;
+
+    public IEnumerable<SolicitacaoEmAndamentoDTO> listaServicosEmAndamento;
 }

@@ -8,6 +8,8 @@ public class AtendimentoEntity: BaseEntity
 
     public DateTime AtendidoEm { get; set; } = DateTime.Now;
 
+    public DateTime? RecusadoEm { get; set; }
+
     public DateTime? ConfirmadoEm { get; set; }
 
     public DateTime? FinalizadoEm { get; set; }

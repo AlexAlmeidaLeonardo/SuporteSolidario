@@ -3,6 +3,7 @@ namespace SuporteSolidarioBusiness.Infrastructure.MySQL.Repositories;
 using SuporteSolidarioBusiness.Domain.Entities;
 using SuporteSolidarioBusiness.Application.Repositories;
 using SuporteSolidarioBusiness.Infrastructure.Mappers;
+using SuporteSolidarioBusiness.Application.DTOs;
 
 public class ClienteMySqlRepository : IClienteRepository
 {
@@ -83,5 +84,21 @@ public class ClienteMySqlRepository : IClienteRepository
         ClienteEntity entity = ModelToEntity.MapCliente(model);
 
         return entity;
+    }
+
+    public ClienteDTO BuscarPorAtendimento(long idAtendimento)
+    {
+        IQueryable<ClienteDTO> cliente = from C in _context.Clientes
+                                          join S in _context.Solicitacoes on C.Id equals S.IdCliente
+                                          join A in _context.Atendimentos on S.Id equals A.IdSolicitacao
+                                          where A.Id == idAtendimento
+                                          select new ClienteDTO
+                                          {
+                                              Nome = C.Nome,
+                                              Sobrenome = C.Sobrenome
+                                          };
+
+
+        return cliente.FirstOrDefault();
     }
 }

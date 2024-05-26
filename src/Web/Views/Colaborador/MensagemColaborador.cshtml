@@ -1,0 +1,74 @@
+@using SuporteSolidarioBusiness.Application.DTOs
+@model SuporteSolidario.ViewModel.MensagemColaboradorViewModel
+
+@{
+    bool hasError = false;
+    if(!String.IsNullOrEmpty(Model.MENSAGEM_ERRO))
+    {
+        hasError = true;
+    }
+}
+
+<h2>@Model.TITULO_PAGINA</h2>
+<hr />
+
+<div class="row">
+    <div class="col-7">
+        <h6>Para <strong>@Model.NomeCliente</strong></h6>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-9">
+        <div class="caixaChat">
+            @foreach(AtendimentoMensagemDTO mensagem in Model.ListaMensagens)
+            {
+                if(mensagem.IsCliente)
+                {
+            <div class="caixaMensagemEsquerda text-start">
+                <div class="mb-2"><label>@Model.NomeCliente</label></div>
+                <div style="white-space: pre-line">@mensagem.Mensagem</div>
+                <div><label>@mensagem.Criacao.ToString("dd/MM/yyyy hh:mm:ss")</label></div>
+            </div>
+                }
+                else
+                {
+            <div class="caixaMensagemDireita text-end">
+                <div><label>Você</label></div>
+                <div class="text-start" style="white-space: pre-line">@mensagem.Mensagem</div>
+                <div><label>@mensagem.Criacao.ToString("dd/MM/yyyy hh:mm:ss")</label></div>
+            </div>
+                }
+            }
+        </div>
+    </div>        
+</div>
+
+<form enctype="multipart/form-data" asp-action="MensagemColaborador">
+    @Html.HiddenFor(m => m.IdAtendimento)
+    <div class="row mt-6">
+        <div class="col-9">
+            <textarea class="textarea-resposta" asp-for="Mensagem"></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row mt-4">
+            <div class="col-4 col-sm-3 col-md-2 col-lg-4 col-xl-2">
+                <input type="submit" value="Enviar" class="btn btn-primary" />
+            </div>
+        
+            <div class="col-4 col-sm-3 col-md-2 col-lg-4 col-xl-1">
+                <a class="btn btn-primary" role="button">Voltar</a>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+
+@if(hasError)
+{
+    <br/>
+    <br/>
+    <center><strong class="text-danger">@Model.MENSAGEM_ERRO</strong></center>
+}

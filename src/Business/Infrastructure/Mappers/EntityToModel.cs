@@ -120,11 +120,7 @@ public static class EntityToModel
         AtendimentoMensagemModel model = new AtendimentoMensagemModel
         {
             Id = entity.Id,
-            Atendimento = new AtendimentoModel
-            {
-                Id = entity.IdAtendimento
-            },
-
+            IdAtendimento = entity.IdAtendimento,
             Mensagem = entity.Mensagem,
             IdEmResposta = entity.IdEmResposta,
             Criacao = entity.Criacao,
@@ -141,16 +137,22 @@ public static class EntityToModel
             Id = entity.Id,
             AtendidoEm = entity.AtendidoEm,
             Avaliacao = entity.Avaliacao,
+            /*
             Colaborador = new ColaboradorModel
             {
-                Id = entity.Id
+                Id = entity.IdColaborador
             },
+            */
+            IdColaborador = entity.IdColaborador,
             ConfirmadoEm = entity.ConfirmadoEm,
             FinalizadoEm = entity.FinalizadoEm,
+            IdSolicitacao = entity.IdSolicitacao
+            /*
             Solicitacao = new SolicitacaoModel
             {
-                Id = entity.Id
+                Id = entity.IdSolicitacao
             }
+            */
         };
 
         return model;

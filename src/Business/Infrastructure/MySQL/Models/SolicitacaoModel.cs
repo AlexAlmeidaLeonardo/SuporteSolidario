@@ -37,7 +37,7 @@ public class SolicitacaoModel: BaseModel
     public int Numero { get; set; }
     
     [MaxLength(100)]
-    public string Bairro { get; set; }
+    public string? Bairro { get; set; }
 
     [MaxLength(100)]
     public string Cidade { get; set; }

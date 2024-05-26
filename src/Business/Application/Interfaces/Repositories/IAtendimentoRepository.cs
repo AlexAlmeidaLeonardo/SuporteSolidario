@@ -12,5 +12,7 @@ public interface IAtendimentoRepository
 
     bool SetAsFinalizado(long id);
 
+    bool SetAsRecusado(long id);
+
     bool SetAvaliacao(long id, int avaliacao);
 }

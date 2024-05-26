@@ -56,7 +56,7 @@
                             <th>@item.DataDaSolicitacao.ToString("dd/MM/yyyy")</th>
                             <th>@item.DescricaoServico</th>
                             <th>@item.DataDoServico.ToString("dd/MM/yyyy")</th>
-                            <th><i class="bi bi-whatsapp" title="Conversar com o cliente" style="color:green;"></i></th>
+                            <th><a href="@Url.Action("DetalhesSolicitacao", "Colaborador", new { idSolicitacao = item.Id })"><i class="bi bi-info-square-fill" title="Detalhes da solicitação" style="color:green;"/></a></th>
                         </tr>
                     }
                     </tbody>
@@ -66,6 +66,7 @@
         </div>
 
     </div>
+    
 
 }
 else
