@@ -12,7 +12,6 @@ VALUES ('Saúde e Bem-estar'),
 INSERT INTO servicos (id_categoria, descricao)
 VALUES (1, 'Serviços de telemedicina'),
        (1, 'Fisioterapia em casa'),
-       (1, 'Entrega de medicamentos'),
        (1, 'Consultas de nutrição'),
        (1, 'Serviços de saúde mental');
 
@@ -52,9 +51,4 @@ VALUES (7, 'Consultoria financeira'),
 INSERT INTO servicos (id_categoria, descricao)
 VALUES (8, 'Suporte técnico para dispositivos digitais'),
        (8, 'Aulas de alfabetização digital');
-
-INSERT INTO servicos (id_categoria, descricao)
-VALUES (8, 'Suporte técnico para dispositivos digitais'),
-       (8, 'Aulas de alfabetização digital');
-
 

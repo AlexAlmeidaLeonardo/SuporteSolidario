@@ -16,6 +16,6 @@ public class BuscarSolicitacoesComAtendimentosByColaborador
 
     public List<SolicitacaoEmAndamentoDTO> Execute()
     {
-        return _solicitacaoRepository.BuscarSolicitacoesComAtendimentosByCliente(_idColaborador);
+        return _solicitacaoRepository.BuscarSolicitacoesComAtendimentosByColaborador(_idColaborador);
     }
 }

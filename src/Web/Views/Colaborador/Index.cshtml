@@ -73,7 +73,7 @@
                     <thead>
                         <tr>
                             <th>Serviço</th>
-                            <th>Colaborador</th>
+                            <th>Cliente</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -82,10 +82,10 @@
                     {
                         <tr>
                             <th>@item.DescricaoServico</th>
-                            <th>@item.Colaborador</th>
+                            <th>@item.Cliente</th>
                             <th>
                                 <a href="@Url.Action("MensagemColaborador", "Colaborador", new {idAtendimento = item.IdAtendimento} )">
-                                <i class="bi bi-whatsapp" title="Conversar com o @item.Colaborador" style="color:green;"></i>
+                                <i class="bi bi-whatsapp" title="Conversar com @item.Colaborador" style="color:green;"></i>
                                 </a>
                             </th>
                         </tr>

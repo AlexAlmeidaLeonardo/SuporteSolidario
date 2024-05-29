@@ -101,7 +101,7 @@ public class ColaboradorMySqlRepository : IColaboradorRepository
                                   join Cliente                in _context.Clientes            on Solicitacao.IdCliente            equals Cliente.Id
                                   join Servico                in _context.Servicos            on ColaboradorSolicitacao.IdServico equals Servico.Id
                                   join Categoria              in _context.Categorias          on Servico.IdCategoria              equals Categoria.Id
-                                 where ColaboradorSolicitacao.IdColaborador == id
+                                 where Solicitacao.Id == id
                                 select new DetalhesSolicitacaoDTO
                                 {
                                     Id = Solicitacao.Id,
