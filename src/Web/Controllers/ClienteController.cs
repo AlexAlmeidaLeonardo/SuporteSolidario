@@ -253,7 +253,7 @@ public class ClienteController : BaseController
                 return RedirectToAction("Create", "Cliente");
             }
 
-            BuscarClienteUseCase useCase = new BuscarClienteUseCase(_clienteRepository, IdUsuarioAutenticado);
+            BuscarClienteByUsuarioUseCase useCase = new BuscarClienteByUsuarioUseCase(_clienteRepository, IdUsuarioAutenticado);
             ClienteEntity entity = useCase.Execute();
             ClienteViewModel viewModel = EntityToViewModel.MapCliente(entity);
             viewModel.FORM_ACTION = "Edit";
